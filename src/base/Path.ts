@@ -19,28 +19,44 @@ class Path implements IRoute {
     server.restana[this.method](
       this.path,
       async (req: HttpReq, res: HttpRes) => {
-        const result = await this.onRequest(req, res)
+        try {
+          const result = await this.onRequest(req, res)
         
-        switch (typeof result) {
-          case 'object':
-            res.send(
-              JSON.stringify(result)
-            )
-            break
+          switch (typeof result) {
+            case 'object':
+              res.send(
+                this.server.config.http.cleanedJsonResponses ?
+                  JSON.stringify(result, null, 2) :
+                  JSON.stringify(result)
+              )
+              break
 
-          case 'number':
-            res.statusCode = result
-            res.end()
-            break
+            case 'number':
+              res.statusCode = result
+              res.end()
+              break
 
-          case 'string':
-            res.send(result)
-            break
+            case 'string':
+              res.send(result)
+              break
 
-          default:
-            res.statusCode = 500
-            res.end()
-            break
+            default:
+              res.statusCode = 500
+              res.end()
+              break
+          }
+        } catch(err) {
+          const data = {
+            code: 500,
+            message: err.message
+          }
+
+          res.statusCode = 500
+          res.send(
+            this.server.config.http.cleanedJsonResponses ?
+              JSON.stringify(data, null, 2) :
+              JSON.stringify(data)
+          )
         }
       }
     )

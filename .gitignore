@@ -131,3 +131,6 @@ dist
 
 # dist folder
 dist/
+
+# let's not include config file
+config.json

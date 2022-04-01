@@ -11,8 +11,30 @@ interface IRoute {
   method: string
 }
 
+interface IDatabaseConfig {
+  host: string
+  port: number
+  user: string
+  password: string
+  database: string
+}
+
+interface IHttpConfig {
+  port: number
+  cleanedJsonResponses: boolean
+}
+
+interface IConfig {
+  http: IHttpConfig
+  db: IDatabaseConfig
+}
+
 export {
   IRoute,
+  IConfig,
+
+  IHttpConfig,
+  IDatabaseConfig,
 
   HttpReq,
   HttpRes,

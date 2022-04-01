@@ -1,14 +1,24 @@
 import restana from 'restana'
+import knex, { Knex } from 'knex'
+
+import { IConfig } from '../Types'
 import Path from './Path'
 
 class HttpServer {
   public restana = restana()
   public routes: Map<string, Path> = new Map()
 
-  constructor() {}
+  public db: Knex<any, unknown[]>
+
+  constructor(public config: IConfig) {
+    this.db = knex({
+      client: 'mysql',
+      connection: this.config.db
+    })
+  }
 
   public ready() {
-    return this.restana.start(3000)
+    return this.restana.start(this.config.http.port)
   }
 
   public async register(path: typeof Path) {
