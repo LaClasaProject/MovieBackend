@@ -1,5 +1,5 @@
 # Beef Backend
-Beef backend for interacting wi
+Beef backend for interacting with the database.
 
 ## Routes
  
