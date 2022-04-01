@@ -17,7 +17,7 @@ Beef backend for interacting wi
   | `?limit` | `number` | The limit of users to fetch from the database. |
 
 - `/users/id/:id`  
-  **Params**: N/A  
+  **Params**: 
   | Param | Value | Description |
   | :---: | :---: | :---: |
   | `:id` | `number` | The UserId of the user to fetch from the database. |  
