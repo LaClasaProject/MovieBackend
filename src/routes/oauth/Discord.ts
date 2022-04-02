@@ -47,35 +47,51 @@ class DiscordOauthToken extends Path implements IRoute {
       }
     )
 
+    // create new entry in database
+    const matchUsers = await this.server.db.select<
+      ({
+        DiscordId: string,
+        AccountId: string
+      })[]
+    >(
+        [
+          'DiscordId',
+          'AccountId'
+        ]
+      )
+      .from('web')
+      .where(
+        'DiscordId',
+        discordUser.data.id
+      )
+
+    let accountId: string
+
+    if (matchUsers.length < 1)
+      await this.server.db('web')
+      .insert(
+        {
+          AccountId: accountId = await Utils.generate32ByteId(),
+          DiscordId: discordUser.data.id
+        }
+      )
+    else
+      accountId = matchUsers[0].AccountId
+
+    console.log({
+      oauth: data,
+      type: 'discord_oauth',
+      accountId
+    })
+
     const token = await Utils.encryptJWT(
       {
         oauth: data,
         type: 'discord_oauth',
-        id: discordUser.data.id
+        accountId
       },
       data.expires_in
     )
-
-    // create new entry in database
-    const count = await Utils.countValueInColumn(
-      this.server.db,
-      {
-        table: 'web',
-        column: 'DiscordId',
-        value: discordUser.data.id
-      }
-    )
-
-    if (count < 1) 
-      await this.server.db('web')
-      .insert(
-        {
-          AccountId: await Utils.generate32ByteId(),
-          DiscordId: discordUser.data.id
-        }
-      )
-
-    await Utils.decryptJWT(token)
 
     return {
       code: 200,
