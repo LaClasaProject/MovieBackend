@@ -4,9 +4,11 @@ import { HttpReq, IDiscordAccessToken, IRoute } from '../../Types'
 import axios from 'axios'
 import jsonwebtoken from 'jsonwebtoken'
 
+import Utils from '../../Utils'
+
 class DiscordOauthToken extends Path implements IRoute {
   public path   = '/token/discord/:code'
-  public method = 'post'
+  public method = 'get'
 
   public async onRequest(req: HttpReq) {
     const { code } = req.params
@@ -35,15 +37,45 @@ class DiscordOauthToken extends Path implements IRoute {
     )
 
     const data: IDiscordAccessToken = res.data
-    const token = jsonwebtoken.sign(
-      data,
-      this.server.config.jwt_secret,
+    const discordUser = await axios.get(
+      discordOauth.endpoint +
+        '/users/@me',
       {
-        expiresIn: data.expires_in
+        headers: {
+          Authorization: 'Bearer ' + data.access_token
+        }
       }
     )
 
-    // todo encrypt jwt token
+    const token = await Utils.encryptJWT(
+      {
+        oauth: data,
+        type: 'discord_oauth',
+        id: discordUser.data.id
+      },
+      data.expires_in
+    )
+
+    // create new entry in database
+    const count = await Utils.countValueInColumn(
+      this.server.db,
+      {
+        table: 'web',
+        column: 'DiscordId',
+        value: discordUser.data.id
+      }
+    )
+
+    if (count < 1) 
+      await this.server.db('web')
+      .insert(
+        {
+          AccountId: await Utils.generate32ByteId(),
+          DiscordId: discordUser.data.id
+        }
+      )
+
+    await Utils.decryptJWT(token)
 
     return {
       code: 200,

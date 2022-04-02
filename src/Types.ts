@@ -49,7 +49,20 @@ interface IConfig {
   },
 
   jwt_secret: string
-  admin_key: string
+  admin_key: string,
+
+  cypher_iv_key: string
+}
+
+interface IEncryptedToken {
+  iv: string
+  token: string
+}
+
+interface IColumnCountOptions {
+  table: string
+  column: string
+  value: string
 }
 
 export {
@@ -63,5 +76,8 @@ export {
   HttpRes,
 
   PathReturnable,
-  IDiscordAccessToken
+  IDiscordAccessToken,
+
+  IEncryptedToken,
+  IColumnCountOptions
 }

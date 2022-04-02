@@ -24,4 +24,7 @@
 
   "jwt_secret": "beef_secret_key",
   "admin_key": "beef_admin_key"
+
+  // this must be exactly 32 chars
+  "cypher_iv_key": "5Xg0BfZf1z3QQkJ4aefcKmQfTptD741C"
 }

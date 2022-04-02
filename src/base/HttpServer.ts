@@ -3,6 +3,7 @@ import knex, { Knex } from 'knex'
 
 import { IConfig } from '../Types'
 import Path from './Path'
+import Utils from '../Utils'
 
 class HttpServer {
   public restana = restana()
@@ -17,7 +18,26 @@ class HttpServer {
     })
   }
 
-  public ready() {
+  public async ready() {
+    // prepare tables
+    if (
+      !(await this.db.schema.hasTable('web'))
+    ) {
+      await this.db.schema.createTable(
+        'web', (table) => {
+          table.string('AccountId', 64)
+            .notNullable()
+            .primary()
+
+          table.text('DiscordId')
+          table.binary('Accounts')
+
+          table.string('Username', 36)
+          table.specificType('Password', 'tinyblob')
+        }
+      )
+    }
+
     return this.restana.start(this.config.http.port)
   }
 

@@ -21,7 +21,7 @@ class GetUsers extends Path implements IRoute {
     const limit = Number(req.query.limit ?? 0)
     const query =
       this.server.db.select<IPartialUser[]>(...PartialUserKeys)
-      .from('players')
+        .from('players')
 
     if (!isNaN(limit) && limit >= 1 && limit <= Number.MAX_SAFE_INTEGER)
       query.limit(limit)
