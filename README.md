@@ -7,7 +7,7 @@ Beef backend for interacting with the database.
   - Requires admin_key authorization.
 
 **GET**: `/admin/user/:id`  
-  - Get a specific user from the database. Would return an array of **partial** user info.
+  - Get a specific user from the database. Would a **partial** user info.
   - Requires admin_key authorization.
 
 **POST**: `/token/discord/:code`
