@@ -49,8 +49,6 @@ class Path implements IRoute {
               break
           }
         } catch(err) {
-          console.log(err)
-
           const data = {
             code: 500,
             message: err.isAxiosError ?

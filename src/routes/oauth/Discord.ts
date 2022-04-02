@@ -6,7 +6,7 @@ import Utils from '../../Utils'
 
 class DiscordOauthToken extends Path implements IRoute {
   public path   = '/token/discord/:code'
-  public method = 'get'
+  public method = 'all' // keep it like this for now
 
   public async onRequest(req: HttpReq) {
     const { code } = req.params
@@ -15,24 +15,33 @@ class DiscordOauthToken extends Path implements IRoute {
       throw new Error('invalid discord oauth code.')
 
     const discordOauth = this.server.config.oauth.discord
-    const res = await axios.post(
-      discordOauth.endpoint +
-        '/oauth2/token',
-      new URLSearchParams(
+    let res
+
+    try {
+      res = await axios.post(
+        discordOauth.endpoint +
+          '/oauth2/token',
+        new URLSearchParams(
+          {
+            client_id: discordOauth.clientId,
+            client_secret: discordOauth.clientSecret,
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: 'http://localhost:3000/callback/discord'
+          }
+        ).toString(),
         {
-          client_id: discordOauth.clientId,
-          client_secret: discordOauth.clientSecret,
-          grant_type: 'authorization_code',
-          code,
-          redirect_uri: 'http://localhost:3000/callback/discord'
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         }
-      ).toString(),
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+      )
+    } catch(err) {
+      return {
+        code: 400,
+        message: err?.response?.data?.error_description || 'invalid code provided.'
       }
-    )
+    }
 
     const data: IDiscordAccessToken = res.data
     const discordUser = await axios.get(

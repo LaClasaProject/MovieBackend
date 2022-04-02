@@ -13,4 +13,9 @@ Beef backend for interacting with the database.
 **POST**: `/token/discord/:code`
   - Exchange a Discord authorization code for an access token.
   - Would return a jwt token containing the access token data from Discord.
-  - *Soon the jwt token would be encrypted*
+
+
+#### Oauth specific routes
+**GET**: `/discord/@me`  
+  - Gets the current userinfo from Discord of the user.
+  - Would require to add the JWT token provided by the **server** in the headers as `authorization`.

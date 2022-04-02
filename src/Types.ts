@@ -20,11 +20,11 @@ interface IDatabaseConfig {
 }
 
 interface IOAuthConfig {
-  "clientId": string
-  "clientSecret": string
-  "redirect_uri": string
-  "scopes": string
-  "endpoint": string
+  clientId: string
+  clientSecret: string
+  redirect_uri: string
+  scopes: string
+  endpoint: string
 }
 
 interface IDiscordAccessToken {
@@ -59,6 +59,20 @@ interface IEncryptedToken {
   token: string
 }
 
+// stuff for possible types for decrypt jwt
+interface IDecodedJwtTokenDiscordData {
+  type: 'discord_oauth'
+  oauth: IDiscordAccessToken
+  accountId: string
+}
+
+interface IDecodedJwtTokenGoogleData {
+  type: 'google_oauth'
+  accountId: string
+}
+
+type IDecodedJwtToken = IDecodedJwtTokenDiscordData | IDecodedJwtTokenGoogleData
+
 export {
   IRoute,
   IConfig,
@@ -72,5 +86,9 @@ export {
   PathReturnable,
   IDiscordAccessToken,
 
-  IEncryptedToken
+  IEncryptedToken,
+  IDecodedJwtToken,
+
+  IDecodedJwtTokenDiscordData,
+  IDecodedJwtTokenGoogleData
 }
