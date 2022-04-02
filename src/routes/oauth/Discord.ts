@@ -78,12 +78,6 @@ class DiscordOauthToken extends Path implements IRoute {
     else
       accountId = matchUsers[0].AccountId
 
-    console.log({
-      oauth: data,
-      type: 'discord_oauth',
-      accountId
-    })
-
     const token = await Utils.encryptJWT(
       {
         oauth: data,
