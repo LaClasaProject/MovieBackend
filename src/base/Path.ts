@@ -20,10 +20,13 @@ class Path implements IRoute {
       this.path,
       async (req: HttpReq, res: HttpRes) => {
         try {
-          const result = await this.onRequest(req, res)
+          const result = await this.onRequest(req, res) as any
         
           switch (typeof result) {
             case 'object':
+            if (typeof result.code === 'number')
+              res.statusCode = result.code
+
               res.send(
                 this.server.config.http.cleanedJsonResponses ?
                   JSON.stringify(result, null, 2) :
@@ -48,7 +51,9 @@ class Path implements IRoute {
         } catch(err) {
           const data = {
             code: 500,
-            message: err.message
+            message: err.isAxiosError ?
+              `Internal API Error, please contact admins about this.` :
+              err.message
           }
 
           res.statusCode = 500

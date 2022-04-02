@@ -2,15 +2,16 @@ import config from './config.json'
 import HttpServer from './src/base/HttpServer'
 
 // import paths
-import GetUsers from './src/routes/GetUsers'
-import GetUserById from './src/routes/GetUserById'
+import DiscordOauthToken from './src/routes/oauth/Discord'
 
 const main = async () => {
-  const http = new HttpServer(config)
+  const http = new HttpServer(config as any)
   
   // register paths
-  await http.register(GetUsers)
-  await http.register(GetUserById)
+  //await http.register(GetUsers)
+  //await http.register(GetUserById)
+  //await http.register(Login)
+  await http.register(DiscordOauthToken)
 
   try {
     await http.ready()

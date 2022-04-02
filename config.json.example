@@ -4,11 +4,24 @@
     "cleanedJsonResponses": false
   },
 
+  "oauth": {
+    "discord": {
+      "clientId": "",
+      "clientSecret": "",
+      "redirect_uri": "http://localhost:8080/callback/discord",
+      "scopes": "identify",
+      "endpoint": "https://discord.com/api/v8"
+    }
+  },
+
   "db": {
     "host": "127.0.0.1",
     "port": 3306,
     "user": "user",
     "password": "password",
     "database": "beef"
-  }
+  },
+
+  "jwt_secret": "beef_secret_key",
+  "admin_key": "beef_admin_key"
 }

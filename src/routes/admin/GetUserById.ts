@@ -1,16 +1,23 @@
-import Path from '../base/Path'
+import Path from '../../base/Path'
 import { 
   IPartialUser,
   PartialUserKeys
-} from '../Responses'
+} from '../../Responses'
 
-import { HttpReq, IRoute } from '../Types'
+import { HttpReq, IRoute } from '../../Types'
 
 class GetUserById extends Path implements IRoute {
-  public path   = '/users/id/:id'
+  public path   = '/admin/user/:id'
   public method = 'get'
   
   public async onRequest(req: HttpReq) {
+    const adminKey = req.headers.authorization
+    if (adminKey !== this.server.config.admin_key)
+      return {
+        code: 401,
+        message: 'unauthorized action taken'
+      }
+
     const id = Number(req.params.id)
     if (isNaN(id) || id > Number.MAX_SAFE_INTEGER || id < 1)
       throw new Error('invalid UserId was provided.')

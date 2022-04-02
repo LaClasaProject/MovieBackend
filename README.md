@@ -2,24 +2,15 @@
 Beef backend for interacting with the database.
 
 ## Routes
- 
-| Method | Path |
-| :---: | :---: |
-| GET | `/users` |
-| GET | `/users/id/:id` |
+**GET**: `/admin/users/`  
+  - Get all users from the database. Would return an array of **partial** user info.
+  - Requires admin_key authorization.
 
-## Queries & Params
-- `/users`  
-  **Params**: N/A  
-  **Queries**:
-  | Query | Value | Description |
-  | :---: | :---: | :---: |
-  | `?limit` | `number` | The limit of users to fetch from the database. |
+**GET**: `/admin/user/:id`  
+  - Get a specific user from the database. Would return an array of **partial** user info.
+  - Requires admin_key authorization.
 
-- `/users/id/:id`  
-  **Params**: 
-  | Param | Value | Description |
-  | :---: | :---: | :---: |
-  | `:id` | `number` | The UserId of the user to fetch from the database. |  
-
-  **Queries**: N/A
+**POST**: `/token/discord/:code`
+  - Exchange a Discord authorization code for an access token.
+  - Would return a jwt token containing the access token data from Discord.
+  - *Soon the jwt token would be encrypted*
