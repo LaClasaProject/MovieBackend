@@ -2,8 +2,6 @@ import Path from '../../base/Path'
 import { HttpReq, IDiscordAccessToken, IRoute } from '../../Types'
 
 import axios from 'axios'
-import jsonwebtoken from 'jsonwebtoken'
-
 import Utils from '../../Utils'
 
 class DiscordOauthToken extends Path implements IRoute {
@@ -71,7 +69,7 @@ class DiscordOauthToken extends Path implements IRoute {
       await this.server.db('web')
       .insert(
         {
-          AccountId: accountId = await Utils.generate32ByteId(),
+          AccountId: accountId = await Utils.generateUUID(),
           DiscordId: discordUser.data.id
         }
       )

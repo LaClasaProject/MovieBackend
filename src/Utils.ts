@@ -1,14 +1,14 @@
 import {
   createCipheriv,
   createDecipheriv,
-  randomBytes
+  randomBytes,
+  randomUUID
 } from 'crypto'
 
 import jsonwebtoken from 'jsonwebtoken'
 import config from '../config.json'
 
-import { IColumnCountOptions, IEncryptedToken } from './Types'
-import { Knex } from 'knex'
+import { IEncryptedToken } from './Types'
 
 class Utils {
   public static async generate32ByteId(): Promise<string> {
@@ -17,6 +17,16 @@ class Utils {
         const bytes = randomBytes(32)
         resolve(
           bytes.toString('hex')
+        )
+      }
+    )
+  }
+
+  public static async generateUUID(): Promise<string> {
+    return new Promise(
+      (resolve) => {
+        return resolve(
+          randomUUID()
         )
       }
     )
@@ -87,26 +97,6 @@ class Utils {
         return resolve(jsonData)
       }
     )
-  }
-
-  public static async countValueInColumn(
-    db: Knex<any, unknown[]>,
-    options: IColumnCountOptions
-  ) {
-    const result = (
-      await db.select(options.column)
-        .from(options.table)
-        .where(
-          options.column,
-          options.value
-        )
-        .count(
-          'DiscordId as cnt'
-        )
-        .first()
-      ).cnt
-
-    return result
   }
 }
 

@@ -59,12 +59,6 @@ interface IEncryptedToken {
   token: string
 }
 
-interface IColumnCountOptions {
-  table: string
-  column: string
-  value: string
-}
-
 export {
   IRoute,
   IConfig,
@@ -78,6 +72,5 @@ export {
   PathReturnable,
   IDiscordAccessToken,
 
-  IEncryptedToken,
-  IColumnCountOptions
+  IEncryptedToken
 }
