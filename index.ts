@@ -2,11 +2,11 @@ import config from './config.json'
 import HttpServer from './src/base/HttpServer'
 
 // import paths
-import DiscordOauthToken from './src/routes/oauth/Discord'
+import DiscordOauthToken from './src/routes/oauth/token/Discord'
 import GetUserById from './src/routes/admin/GetUserById'
 import GetUsers from './src/routes/admin/GetUsers'
 
-import GetMe from './src/routes/discord/GetMe'
+import GetMe from './src/routes/oauth/GetMe'
 
 const main = async () => {
   const http = new HttpServer(config as any)

@@ -3,7 +3,7 @@ import knex, { Knex } from 'knex'
 
 import { IConfig } from '../Types'
 import Path from './Path'
-import Utils from '../Utils'
+import Utils from '../utils'
 
 class HttpServer {
   public restana = restana()

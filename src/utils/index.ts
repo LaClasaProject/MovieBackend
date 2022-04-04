@@ -6,9 +6,9 @@ import {
 } from 'crypto'
 
 import jsonwebtoken from 'jsonwebtoken'
-import config from '../config.json'
+import config from '../../config.json'
 
-import { IEncryptedToken } from './Types'
+import { IEncryptedToken } from '../Types'
 
 class Utils {
   public static async generate32ByteId(): Promise<string> {

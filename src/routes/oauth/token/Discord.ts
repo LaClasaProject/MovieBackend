@@ -1,8 +1,8 @@
-import Path from '../../base/Path'
-import { HttpReq, IDiscordAccessToken, IRoute } from '../../Types'
+import Path from '../../../base/Path'
+import { HttpReq, IDiscordAccessToken, IRoute } from '../../../Types'
 
 import axios from 'axios'
-import Utils from '../../Utils'
+import Utils from '../../../utils'
 
 class DiscordOauthToken extends Path implements IRoute {
   public path   = '/token/discord/:code'
@@ -27,7 +27,7 @@ class DiscordOauthToken extends Path implements IRoute {
             client_secret: discordOauth.clientSecret,
             grant_type: 'authorization_code',
             code,
-            redirect_uri: 'http://localhost:3000/callback/discord'
+            redirect_uri: discordOauth.redirect_uri,
           }
         ).toString(),
         {

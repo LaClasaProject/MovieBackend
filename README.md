@@ -16,6 +16,6 @@ Beef backend for interacting with the database.
 
 
 #### Oauth specific routes
-**GET**: `/discord/@me`  
-  - Gets the current userinfo from Discord of the user.
+**GET**: `/oauth/@me`  
+  - Gets the current userinfo of the user via oauth.
   - Would require to add the JWT token provided by the **server** in the headers as `authorization`.
