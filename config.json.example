@@ -11,6 +11,16 @@
       "redirect_uri": "http://localhost:8080/callback/discord",
       "scopes": "identify",
       "endpoint": "https://discord.com/api/v8"
+      "otherEndpoint": null
+    },
+
+    "github": {
+      "clientId": "",
+      "clientSecret": "",
+      "redirect_uri": "http://localhost:8080/callback/github",
+      "scopes": "user",
+      "endpoint": "https://github.com/",
+      "otherEndpoint": "https://api.github.com"
     }
   },
 
@@ -23,6 +33,8 @@
   },
 
   "jwt_secret": "beef_secret_key",
+  "jwt_default_expiry": "1d",
+  
   "admin_key": "beef_admin_key"
 
   // this must be exactly 32 chars

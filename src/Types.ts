@@ -25,12 +25,20 @@ interface IOAuthConfig {
   redirect_uri: string
   scopes: string
   endpoint: string
+
+  otherEndpoint?: string
 }
 
 interface IDiscordAccessToken {
   access_token: string
   expires_in: number
   refresh_token: string
+  scope: string
+  token_type: string
+}
+
+interface IGithubAccessToken {
+  access_token: string
   scope: string
   token_type: string
 }
@@ -49,8 +57,9 @@ interface IConfig {
   },
 
   jwt_secret: string
-  admin_key: string,
+  jwt_default_expiry: string | number
 
+  admin_key: string
   cypher_iv_key: string
 }
 
@@ -71,7 +80,18 @@ interface IDecodedJwtTokenGoogleData {
   accountId: string
 }
 
-type IDecodedJwtToken = IDecodedJwtTokenDiscordData | IDecodedJwtTokenGoogleData
+interface IDecodedJwtTokenGithubData {
+  type: 'github_oauth'
+  oauth: IGithubAccessToken
+  accountId: string
+}
+
+interface IOauthAccountEntry {
+  idColumn: 'GoogleId' | 'DiscordId' | 'GithubId'
+  userId: string
+}
+
+type IDecodedJwtToken = IDecodedJwtTokenDiscordData | IDecodedJwtTokenGoogleData | IDecodedJwtTokenGithubData
 
 export {
   IRoute,
@@ -90,5 +110,10 @@ export {
   IDecodedJwtToken,
 
   IDecodedJwtTokenDiscordData,
-  IDecodedJwtTokenGoogleData
+  IDecodedJwtTokenGoogleData,
+
+  IOauthAccountEntry,
+  IGithubAccessToken,
+
+  IDecodedJwtTokenGithubData
 }

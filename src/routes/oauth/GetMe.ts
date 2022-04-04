@@ -6,7 +6,9 @@ import {
 } from '../../Types'
 
 import Utils from '../../utils'
+
 import DiscordOauthMethods from '../../utils/oauth/Discord'
+import GithubOauthMethods from '../../utils/oauth/Github'
 
 class DiscordOauthToken extends Path implements IRoute {
   public path   = '/oauth/@me'
@@ -26,6 +28,9 @@ class DiscordOauthToken extends Path implements IRoute {
     switch (token.type) {
       case 'discord_oauth':
         return await DiscordOauthMethods.GetMe(token)
+
+      case 'github_oauth':
+        return await GithubOauthMethods.GetMe(token)
 
       default:
         return {

@@ -24,8 +24,22 @@ class Path implements IRoute {
         
           switch (typeof result) {
             case 'object':
-            if (typeof result.code === 'number')
-              res.statusCode = result.code
+              if (result === null) {
+                const data = {
+                  code: 400,
+                  message: 'no message was provided'
+                }
+      
+                res.statusCode = 400
+                return res.send(
+                  this.server.config.http.cleanedJsonResponses ?
+                    JSON.stringify(data, null, 2) :
+                    JSON.stringify(data)
+                )
+              }
+
+              if (typeof result.code === 'number')
+                res.statusCode = result.code
 
               res.send(
                 this.server.config.http.cleanedJsonResponses ?
@@ -49,6 +63,8 @@ class Path implements IRoute {
               break
           }
         } catch(err) {
+          console.log(err)
+
           const data = {
             code: 500,
             message: err.isAxiosError ?

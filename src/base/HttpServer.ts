@@ -30,6 +30,9 @@ class HttpServer {
             .primary()
 
           table.text('DiscordId')
+          table.text('GoogleId')
+          table.text('GithubId')
+
           table.binary('Accounts')
 
           table.string('Username', 36)

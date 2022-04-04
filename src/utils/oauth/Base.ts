@@ -1,7 +1,7 @@
 import { IDecodedJwtTokenDiscordData } from '../../Types'
 
 class OauthBase {
-  public static async GetMe(jwtToken: IDecodedJwtTokenDiscordData): Promise<any> {}
+  public static async GetMe(jwtToken: any): Promise<any> {}
 }
 
 export default OauthBase

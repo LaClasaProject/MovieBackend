@@ -3,6 +3,8 @@ import HttpServer from './src/base/HttpServer'
 
 // import paths
 import DiscordOauthToken from './src/routes/oauth/token/Discord'
+import GithubOauthToken from './src/routes/oauth/token/Github'
+
 import GetUserById from './src/routes/admin/GetUserById'
 import GetUsers from './src/routes/admin/GetUsers'
 
@@ -14,7 +16,10 @@ const main = async () => {
   // register paths
   await http.register(GetUsers)
   await http.register(GetUserById)
+
+
   await http.register(DiscordOauthToken)
+  await http.register(GithubOauthToken)
 
   await http.register(GetMe)
 

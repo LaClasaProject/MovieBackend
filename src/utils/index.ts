@@ -6,9 +6,10 @@ import {
 } from 'crypto'
 
 import jsonwebtoken from 'jsonwebtoken'
+import { Knex } from 'knex'
 import config from '../../config.json'
 
-import { IEncryptedToken } from '../Types'
+import { IEncryptedToken, IOauthAccountEntry } from '../Types'
 
 class Utils {
   public static async generate32ByteId(): Promise<string> {
@@ -32,7 +33,7 @@ class Utils {
     )
   }
 
-  public static async encryptJWT(data: any, expiresIn: number): Promise<string> {
+  public static async encryptJWT(data: any, expiresIn: number | string): Promise<string> {
     return new Promise(
       (resolve) => {
         const iv = randomBytes(16),
@@ -97,6 +98,40 @@ class Utils {
         return resolve(jsonData)
       }
     )
+  }
+
+  // insert new oauth created account or via login
+  public static async oAuthNewAccountEntry(
+    db: Knex,
+    oauth: IOauthAccountEntry
+  ): Promise<string> {
+    // create new entry in database
+    const matchUsers = await db.select(
+        [
+          oauth.idColumn,
+          'AccountId'
+        ]
+      )
+      .from('web')
+      .where(
+        oauth.idColumn,
+        oauth.userId
+      )
+
+    let accountId: string
+
+    if (matchUsers.length < 1)
+      await db('web')
+      .insert(
+        {
+          AccountId: accountId = await Utils.generateUUID(),
+          [oauth.idColumn]: oauth.userId
+        }
+      )
+    else
+      accountId = matchUsers[0].AccountId
+
+    return accountId
   }
 }
 
