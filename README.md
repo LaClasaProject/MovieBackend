@@ -10,9 +10,9 @@ Beef backend for interacting with the database.
   - Get a specific user from the database. Would return a **partial** user info.
   - Requires admin_key authorization.
 
-**POST**: `/token/discord/:code`
-  - Exchange a Discord authorization code for an access token.
-  - Would return a jwt token containing the access token data from Discord.
+**POST**: `/token/[discord|github|google]/:code`
+  - Exchange an authorization code for an access token.
+  - Would return a jwt token containing the access token data from the site used.
 
 
 #### Oauth specific routes

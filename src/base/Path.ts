@@ -63,7 +63,7 @@ class Path implements IRoute {
               break
           }
         } catch(err) {
-          console.log(err)
+          //console.log(err)
 
           const data = {
             code: 500,
