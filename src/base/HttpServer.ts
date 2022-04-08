@@ -21,10 +21,10 @@ class HttpServer {
   public async ready() {
     // prepare tables
     if (
-      !(await this.db.schema.hasTable('web'))
+      !(await this.db.schema.hasTable('Web'))
     ) {
       await this.db.schema.createTable(
-        'web', (table) => {
+        'Web', (table) => {
           table.string('AccountId', 64)
             .notNullable()
             .primary()

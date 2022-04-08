@@ -55,7 +55,7 @@ class DiscordOauthToken extends Path implements IRoute {
     )
 
     // create new entry in database
-    const accountId = await Utils.oAuthNewAccountEntry(
+    const account = await Utils.oAuthNewAccountEntry(
         this.server.db,
         {
           idColumn: 'DiscordId',
@@ -66,14 +66,18 @@ class DiscordOauthToken extends Path implements IRoute {
         {
           oauth: data,
           type: 'discord_oauth',
-          accountId
+          accountId: account.accountId
         },
         data.expires_in
       )
 
+
     return {
       code: 200,
-      data: token
+      data: {
+        token,
+        isNew: account.isNew
+      }
     }
   }
 }

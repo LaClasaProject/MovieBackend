@@ -93,6 +93,11 @@ interface IOauthAccountEntry {
 
 type IDecodedJwtToken = IDecodedJwtTokenDiscordData | IDecodedJwtTokenGoogleData | IDecodedJwtTokenGithubData
 
+interface INewOauthAccountResponse {
+  accountId: string
+  isNew: boolean
+}
+
 export {
   IRoute,
   IConfig,
@@ -115,5 +120,6 @@ export {
   IOauthAccountEntry,
   IGithubAccessToken,
 
-  IDecodedJwtTokenGithubData
+  IDecodedJwtTokenGithubData,
+  INewOauthAccountResponse
 }

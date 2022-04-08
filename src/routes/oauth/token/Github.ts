@@ -62,7 +62,7 @@ class GithubOauthToken extends Path implements IRoute {
     )
 
     // create new entry in database
-    const accountId = await Utils.oAuthNewAccountEntry(
+    const account = await Utils.oAuthNewAccountEntry(
         this.server.db,
         {
           idColumn: 'GithubId',
@@ -73,14 +73,17 @@ class GithubOauthToken extends Path implements IRoute {
         {
           oauth: data,
           type: 'github_oauth',
-          accountId
+          accountId: account.accountId
         },
         this.server.config.jwt_default_expiry
       )
 
     return {
       code: 200,
-      data: token
+      data: {
+        token,
+        isNew: account.isNew
+      }
     }
   }
 }

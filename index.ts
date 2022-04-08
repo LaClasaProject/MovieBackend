@@ -9,6 +9,7 @@ import GetUserById from './src/routes/admin/GetUserById'
 import GetUsers from './src/routes/admin/GetUsers'
 
 import GetMe from './src/routes/oauth/GetMe'
+import GetWebUser from './src/routes/api/GetWebUser'
 
 const main = async () => {
   const http = new HttpServer(config as any)
@@ -22,6 +23,9 @@ const main = async () => {
   await http.register(GithubOauthToken)
 
   await http.register(GetMe)
+
+  // api routes for the web
+  await http.register(GetWebUser)
 
   try {
     await http.ready()

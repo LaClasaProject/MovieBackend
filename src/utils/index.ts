@@ -9,7 +9,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import { Knex } from 'knex'
 import config from '../../config.json'
 
-import { IEncryptedToken, IOauthAccountEntry } from '../Types'
+import { IEncryptedToken, INewOauthAccountResponse, IOauthAccountEntry } from '../Types'
 
 class Utils {
   public static async generate32ByteId(): Promise<string> {
@@ -104,12 +104,13 @@ class Utils {
   public static async oAuthNewAccountEntry(
     db: Knex,
     oauth: IOauthAccountEntry
-  ): Promise<string> {
+  ): Promise<INewOauthAccountResponse> {
     // create new entry in database
-    const matchUsers = await db.select(
+    const user = await db.select(
         [
           oauth.idColumn,
-          'AccountId'
+          'AccountId',
+          'Username'
         ]
       )
       .from('web')
@@ -117,21 +118,32 @@ class Utils {
         oauth.idColumn,
         oauth.userId
       )
+      .first()
 
-    let accountId: string
+    let accountId: string,
+      isNew: boolean = false
 
-    if (matchUsers.length < 1)
+    if (!user) {
       await db('web')
-      .insert(
-        {
-          AccountId: accountId = await Utils.generateUUID(),
-          [oauth.idColumn]: oauth.userId
-        }
-      )
-    else
-      accountId = matchUsers[0].AccountId
+        .insert(
+          {
+            AccountId: accountId = await Utils.generateUUID(),
+            [oauth.idColumn]: oauth.userId
+          }
+        )
 
-    return accountId
+      isNew = true
+    } else {
+      accountId = user.AccountId
+
+      if (!user.Username)
+        isNew = true
+    }
+
+    return {
+      accountId,
+      isNew
+    }
   }
 }
 

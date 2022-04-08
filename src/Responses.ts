@@ -26,17 +26,19 @@ interface IPartialUser {
 const WebAccountKeys = [
   'AccountId',
   'DiscordId',
+  'GoogleID',
+  'GithubId',
   'Accounts',
-  'Username',
-  'Password'
+  'Username'
 ]
 
 interface IWebAccount {
   AccountId: string
   DiscordId: string
+  GoogleId: string
+  GithubId: string
   Accounts: Buffer
   Username: string
-  Password: Buffer
 }
 
 export {
