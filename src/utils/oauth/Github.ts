@@ -25,8 +25,6 @@ class GithubOauthMethods extends OauthBase {
         data: user
       }
     } catch(err) {
-      console.log(err)
-
       // unauthorized
       return {
         code: 400,

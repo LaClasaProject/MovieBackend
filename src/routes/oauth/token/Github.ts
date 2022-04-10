@@ -1,5 +1,5 @@
 import Path from '../../../base/Path'
-import { HttpReq, IGithubAccessToken, IRoute } from '../../../Types'
+import { HttpReq, IDecodedJwtToken, IGithubAccessToken, IRoute } from '../../../Types'
 
 import axios from 'axios'
 import Utils from '../../../utils'
@@ -61,28 +61,47 @@ class GithubOauthToken extends Path implements IRoute {
       }
     )
 
-    // create new entry in database
-    const account = await Utils.oAuthNewAccountEntry(
-        this.server.db,
-        {
-          idColumn: 'GithubId',
-          userId: githubUser.data.id?.toString()
-        }
-      ),
-      token = await Utils.encryptJWT(
-        {
-          oauth: data,
-          type: 'github_oauth',
-          accountId: account.accountId
-        },
-        this.server.config.jwt_default_expiry
-      )
+    const userId = githubUser.data.id?.toString(),
+      encryptedJwt = req.headers.authorization
 
-    return {
-      code: 200,
-      data: {
-        token,
-        isNew: account.isNew
+    if (encryptedJwt) {
+      const data = await Utils.decryptJWT<IDecodedJwtToken>(encryptedJwt)
+      
+      if (data) // account is valid, update oauth account
+        await Utils.linkOauthAccount(
+          this.server.db,
+          {
+            idColumn: 'GithubId',
+            userId,
+            accountId: data.accountId
+          }
+        )
+
+      return { code: 200 }
+    } else {
+      // create new entry in database
+      const account = await Utils.oAuthNewAccountEntry(
+          this.server.db,
+          {
+            idColumn: 'GithubId',
+            userId
+          }
+        ),
+        token = await Utils.encryptJWT(
+          {
+            oauth: data,
+            type: 'github_oauth',
+            accountId: account.accountId
+          },
+          this.server.config.jwt_default_expiry
+        )
+
+      return {
+        code: 200,
+        data: {
+          token,
+          isNew: account.isNew
+        }
       }
     }
   }

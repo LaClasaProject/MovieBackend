@@ -87,8 +87,16 @@ interface IDecodedJwtTokenGithubData {
   accountId: string
 }
 
+type OauthEntries = 'GoogleId' | 'DiscordId' | 'GithubId'
+
 interface IOauthAccountEntry {
-  idColumn: 'GoogleId' | 'DiscordId' | 'GithubId'
+  idColumn: OauthEntries
+  userId: string
+}
+
+interface IOauthAccountUpdate {
+  accountId: string
+  idColumn: OauthEntries
   userId: string
 }
 
@@ -135,5 +143,8 @@ export {
   INewOauthAccountResponse,
 
   ISetUsernameOptions,
-  ISetUsernameResponse
+  ISetUsernameResponse,
+
+  OauthEntries,
+  IOauthAccountUpdate
 }

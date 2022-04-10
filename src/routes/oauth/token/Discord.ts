@@ -1,5 +1,5 @@
 import Path from '../../../base/Path'
-import { HttpReq, IDiscordAccessToken, IRoute } from '../../../Types'
+import { HttpReq, IDecodedJwtToken, IDiscordAccessToken, IRoute } from '../../../Types'
 
 import axios from 'axios'
 import Utils from '../../../utils'
@@ -54,29 +54,47 @@ class DiscordOauthToken extends Path implements IRoute {
       }
     )
 
-    // create new entry in database
-    const account = await Utils.oAuthNewAccountEntry(
-        this.server.db,
-        {
-          idColumn: 'DiscordId',
-          userId: discordUser.data.id
+    const userId = discordUser.data.id?.toString(),
+      encryptedJwt = req.headers.authorization
+
+    if (encryptedJwt) {
+      const data = await Utils.decryptJWT<IDecodedJwtToken>(encryptedJwt)
+      
+      if (data) // account is valid, update oauth account
+        await Utils.linkOauthAccount(
+          this.server.db,
+          {
+            idColumn: 'DiscordId',
+            userId,
+            accountId: data.accountId
+          }
+        )
+
+      return { code: 200 }
+    } else {
+      // create new entry in database
+      const account = await Utils.oAuthNewAccountEntry(
+          this.server.db,
+          {
+            idColumn: 'DiscordId',
+            userId
+          }
+        ),
+        token = await Utils.encryptJWT(
+          {
+            oauth: data,
+            type: 'discord_oauth',
+            accountId: account.accountId
+          },
+          this.server.config.jwt_default_expiry
+        )
+
+      return {
+        code: 200,
+        data: {
+          token,
+          isNew: account.isNew
         }
-      ),
-      token = await Utils.encryptJWT(
-        {
-          oauth: data,
-          type: 'discord_oauth',
-          accountId: account.accountId
-        },
-        data.expires_in
-      )
-
-
-    return {
-      code: 200,
-      data: {
-        token,
-        isNew: account.isNew
       }
     }
   }

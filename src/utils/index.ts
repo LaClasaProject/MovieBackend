@@ -7,11 +7,21 @@ import {
 
 import jsonwebtoken from 'jsonwebtoken'
 import { Knex } from 'knex'
-import config from '../../config.json'
 
-import { IEncryptedToken, INewOauthAccountResponse, IOauthAccountEntry, ISetUsernameOptions, ISetUsernameResponse } from '../Types'
+import config from '../../config.json'
+import {
+  IEncryptedToken,
+  INewOauthAccountResponse,
+  IOauthAccountEntry,
+  IOauthAccountUpdate,
+  ISetUsernameOptions,
+  ISetUsernameResponse
+} from '../Types'
 
 class Utils {
+  /**
+   * Generate a random 32 byte string.
+   */
   public static generate32ByteId(): Promise<string> {
     return new Promise(
       (resolve) => {
@@ -23,6 +33,9 @@ class Utils {
     )
   }
 
+  /**
+   * Generate a random UUID.
+   */
   public static generateUUID(): Promise<string> {
     return new Promise(
       (resolve) => {
@@ -33,6 +46,11 @@ class Utils {
     )
   }
 
+  /**
+   * Encrypts any data into an enrypted jwt token.
+   * @param data The data to encrypt. Must be an **object**.
+   * @param expiresIn Time before the token expires.
+   */
   public static encryptJWT(data: any, expiresIn: number | string): Promise<string> {
     return new Promise(
       (resolve) => {
@@ -67,6 +85,10 @@ class Utils {
     )
   }
 
+  /**
+   * Decrypts an encrypted jwt token.
+   * @param token The token to decrypt.
+   */
   public static decryptJWT<T>(token: string): Promise<T | null> {
     return new Promise(
       (resolve) => {
@@ -100,12 +122,15 @@ class Utils {
     )
   }
 
-  // insert new oauth created account or via login
+  /**
+   * Creates a new account from an oauth login, or just return the existing one.
+   * @param db The knex database object.
+   * @param oauth The oauth data for updating the database.
+   */
   public static async oAuthNewAccountEntry(
     db: Knex,
     oauth: IOauthAccountEntry
   ): Promise<INewOauthAccountResponse> {
-    // create new entry in database
     const user = await db.select(
         [
           oauth.idColumn,
@@ -146,6 +171,37 @@ class Utils {
     }
   }
 
+  /**
+   * Updates a user's oauth account in the database.
+   * @param db The knex database object.
+   * @param oauth The oauth data for updating the database.
+   */
+  public static async linkOauthAccount(
+    db: Knex,
+    oauth: IOauthAccountUpdate
+  ) {
+    // update the oauth account
+    const amount = await db.update(
+        {
+          [oauth.idColumn]: oauth.userId
+        }
+      )
+      .from(config.db.table)
+      .where(
+        'AccountId',
+        oauth.accountId
+      )
+
+    return {
+      success: amount > 0 // "amount" is the amount of rows updated
+    }
+  }
+
+  /**
+   * Sets the account's username.
+   * @param db The knex database object.
+   * @param options Options for the new username.
+   */
   public static async setAccountUsername(
     db: Knex,
     options: ISetUsernameOptions
@@ -189,7 +245,7 @@ class Utils {
     else // someone is using that username, abort mission kowalski
       return {
         success: false,
-        message: `username: ${username} is already in use.`
+        message: `username: "${username}" is already in use.`
       }
 
     return { success: true }

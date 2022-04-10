@@ -15,7 +15,11 @@ class SetWebUsername extends Path implements IRoute {
     // request is valited via headers
     const encodedJwt = req.headers.authorization,
       token = await Utils.decryptJWT<IDecodedJwtToken>(encodedJwt),
-      { username } = req.body as any
+      { username } = req.body as (
+        {
+          username: string
+        }
+      )
 
     if (!token)
       return {
