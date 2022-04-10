@@ -7,14 +7,14 @@ import {
 import { HttpReq, IRoute } from '../../Types'
 
 class GetWebUser extends Path implements IRoute {
-  public path   = '/api/web_user/:id'
+  public path   = '/api/user/:id'
   public method = 'get'
   
   public async onRequest(req: HttpReq) {
     const accountId = req.params.id,
       query =
         await this.server.db.select<IWebAccount[]>(...WebAccountKeys)
-          .from('web')
+          .from(this.server.config.db.table)
           .where(
             'AccountId',
             accountId

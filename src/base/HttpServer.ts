@@ -3,7 +3,6 @@ import knex, { Knex } from 'knex'
 
 import { IConfig } from '../Types'
 import Path from './Path'
-import Utils from '../utils'
 
 class HttpServer {
   public restana = restana()
@@ -21,10 +20,10 @@ class HttpServer {
   public async ready() {
     // prepare tables
     if (
-      !(await this.db.schema.hasTable('Web'))
+      !(await this.db.schema.hasTable(this.config.db.table))
     ) {
       await this.db.schema.createTable(
-        'Web', (table) => {
+        this.config.db.table, (table) => {
           table.string('AccountId', 64)
             .notNullable()
             .primary()

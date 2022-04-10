@@ -9,10 +9,10 @@ import jsonwebtoken from 'jsonwebtoken'
 import { Knex } from 'knex'
 import config from '../../config.json'
 
-import { IEncryptedToken, INewOauthAccountResponse, IOauthAccountEntry } from '../Types'
+import { IEncryptedToken, INewOauthAccountResponse, IOauthAccountEntry, ISetUsernameOptions, ISetUsernameResponse } from '../Types'
 
 class Utils {
-  public static async generate32ByteId(): Promise<string> {
+  public static generate32ByteId(): Promise<string> {
     return new Promise(
       (resolve) => {
         const bytes = randomBytes(32)
@@ -23,7 +23,7 @@ class Utils {
     )
   }
 
-  public static async generateUUID(): Promise<string> {
+  public static generateUUID(): Promise<string> {
     return new Promise(
       (resolve) => {
         return resolve(
@@ -33,7 +33,7 @@ class Utils {
     )
   }
 
-  public static async encryptJWT(data: any, expiresIn: number | string): Promise<string> {
+  public static encryptJWT(data: any, expiresIn: number | string): Promise<string> {
     return new Promise(
       (resolve) => {
         const iv = randomBytes(16),
@@ -67,7 +67,7 @@ class Utils {
     )
   }
 
-  public static async decryptJWT<T>(token: string): Promise<T | null> {
+  public static decryptJWT<T>(token: string): Promise<T | null> {
     return new Promise(
       (resolve) => {
         try {
@@ -113,7 +113,7 @@ class Utils {
           'Username'
         ]
       )
-      .from('web')
+      .from(config.db.table)
       .where(
         oauth.idColumn,
         oauth.userId
@@ -124,13 +124,13 @@ class Utils {
       isNew: boolean = false
 
     if (!user) {
-      await db('web')
-        .insert(
+      await db.insert(
           {
             AccountId: accountId = await Utils.generateUUID(),
             [oauth.idColumn]: oauth.userId
           }
         )
+        .into(config.db.table)
 
       isNew = true
     } else {
@@ -144,6 +144,55 @@ class Utils {
       accountId,
       isNew
     }
+  }
+
+  public static async setAccountUsername(
+    db: Knex,
+    options: ISetUsernameOptions
+  ): Promise<ISetUsernameResponse> {
+    const { username, accountId } = options
+    if (!username ||
+        username.length < 3 ||
+        username.length > 24 ||
+        !/^[a-zA-Z0-9_]+$/.test(username))
+      return {
+        success: false,
+        message: 'invalid username provided.'
+      }
+
+    // check if there's a username found
+    const matchUser = await db.select(
+        [
+          'Username'
+        ]
+      )
+      .from(config.db.table)
+      .whereRaw(
+        'LOWER(Username) = ?',
+        [
+          username.toLowerCase()
+        ]
+      )
+      .first()
+
+    if (!matchUser) // no user exists with that username, we can use it
+      await db.update(
+        {
+          Username: username
+        }
+      )
+      .into(config.db.table)
+      .where(
+        'AccountId',
+        accountId
+      )
+    else // someone is using that username, abort mission kowalski
+      return {
+        success: false,
+        message: `username: ${username} is already in use.`
+      }
+
+    return { success: true }
   }
 }
 

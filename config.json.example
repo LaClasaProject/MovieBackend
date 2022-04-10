@@ -29,7 +29,8 @@
     "port": 3306,
     "user": "user",
     "password": "password",
-    "database": "beef"
+    "database": "beef",
+    "table": "Web"
   },
 
   "jwt_secret": "beef_secret_key",

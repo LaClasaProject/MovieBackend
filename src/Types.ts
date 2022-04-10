@@ -17,6 +17,7 @@ interface IDatabaseConfig {
   user: string
   password: string
   database: string
+  table: string
 }
 
 interface IOAuthConfig {
@@ -98,6 +99,16 @@ interface INewOauthAccountResponse {
   isNew: boolean
 }
 
+interface ISetUsernameOptions {
+  username: string
+  accountId: string
+}
+
+interface ISetUsernameResponse {
+  success: boolean
+  message?: string
+}
+
 export {
   IRoute,
   IConfig,
@@ -121,5 +132,8 @@ export {
   IGithubAccessToken,
 
   IDecodedJwtTokenGithubData,
-  INewOauthAccountResponse
+  INewOauthAccountResponse,
+
+  ISetUsernameOptions,
+  ISetUsernameResponse
 }

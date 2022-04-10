@@ -1,6 +1,8 @@
 import config from './config.json'
 import HttpServer from './src/base/HttpServer'
 
+import bodyParser from 'body-parser'
+
 // import paths
 import DiscordOauthToken from './src/routes/oauth/token/Discord'
 import GithubOauthToken from './src/routes/oauth/token/Github'
@@ -10,9 +12,15 @@ import GetUsers from './src/routes/admin/GetUsers'
 
 import GetMe from './src/routes/oauth/GetMe'
 import GetWebUser from './src/routes/api/GetWebUser'
+import SetWebUsername from './src/routes/api/SetWebUsername'
 
 const main = async () => {
   const http = new HttpServer(config as any)
+
+  // set restana middlewares
+  http.restana.use(
+    bodyParser.json()
+  )
   
   // register paths
   await http.register(GetUsers)
@@ -26,6 +34,7 @@ const main = async () => {
 
   // api routes for the web
   await http.register(GetWebUser)
+  await http.register(SetWebUsername)
 
   try {
     await http.ready()
