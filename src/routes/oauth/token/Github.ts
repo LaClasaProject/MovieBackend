@@ -100,7 +100,8 @@ class GithubOauthToken extends Path implements IRoute {
         code: 200,
         data: {
           token,
-          isNew: account.isNew
+          isNew: account.isNew,
+          expires_in: this.server.config.jwt_default_expiry
         }
       }
     }

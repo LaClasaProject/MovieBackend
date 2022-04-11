@@ -86,14 +86,15 @@ class DiscordOauthToken extends Path implements IRoute {
             type: 'discord_oauth',
             accountId: account.accountId
           },
-          this.server.config.jwt_default_expiry
+          data.expires_in
         )
 
       return {
         code: 200,
         data: {
           token,
-          isNew: account.isNew
+          isNew: account.isNew,
+          expires_in: data.expires_in
         }
       }
     }

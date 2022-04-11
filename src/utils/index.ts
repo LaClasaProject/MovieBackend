@@ -51,7 +51,7 @@ class Utils {
    * @param data The data to encrypt. Must be an **object**.
    * @param expiresIn Time before the token expires.
    */
-  public static encryptJWT(data: any, expiresIn: number | string): Promise<string> {
+  public static encryptJWT(data: any, expiresIn: number): Promise<string> {
     return new Promise(
       (resolve) => {
         const iv = randomBytes(16),
@@ -59,7 +59,7 @@ class Utils {
             data,
             config.jwt_secret,
             {
-              expiresIn
+              expiresIn: expiresIn * 1000
             }
           )
 

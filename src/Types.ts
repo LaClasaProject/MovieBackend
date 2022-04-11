@@ -58,7 +58,7 @@ interface IConfig {
   },
 
   jwt_secret: string
-  jwt_default_expiry: string | number
+  jwt_default_expiry: number
 
   admin_key: string
   cypher_iv_key: string
