@@ -4,22 +4,35 @@ import {
   WebAccountKeys
 } from '../../Responses'
 
-import { HttpReq, IRoute } from '../../Types'
+import {
+  HttpReq,
+  IDecodedJwtToken,
+  IRoute
+} from '../../Types'
+import Utils from '../../utils'
 
 class GetWebUser extends Path implements IRoute {
-  public path   = '/api/user/:id'
+  public path   = '/api/user'
   public method = 'get'
   
   public async onRequest(req: HttpReq) {
-    const accountId = req.params.id,
-      query =
-        await this.server.db.select<IWebAccount[]>(...WebAccountKeys)
-          .from(this.server.config.db.table)
-          .where(
-            'AccountId',
-            accountId
-          )
-          .first()
+    const encryptedJwt = req.headers.authorization,
+      token = await Utils.decryptJWT<IDecodedJwtToken>(encryptedJwt)
+
+    if (!token)
+      return {
+        code: 400,
+        message: 'invalid jwt token provided.'
+      }
+
+    const query =
+      await this.server.db.select<IWebAccount[]>(...WebAccountKeys)
+        .from(this.server.config.db.table)
+        .where(
+          'AccountId',
+          token.accountId
+        )
+        .first()
 
     return {
       data: query,

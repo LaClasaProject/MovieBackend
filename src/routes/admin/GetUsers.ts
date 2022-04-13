@@ -4,7 +4,10 @@ import {
   PartialUserKeys
 } from '../../Responses'
 
-import { HttpReq, IRoute } from '../../Types'
+import {
+  HttpReq,
+  IRoute
+} from '../../Types'
 
 class GetUsers extends Path implements IRoute {
   public path   = '/admin/users'
