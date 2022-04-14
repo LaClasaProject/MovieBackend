@@ -9,6 +9,8 @@ import jsonwebtoken from 'jsonwebtoken'
 import { Knex } from 'knex'
 
 import config from '../../config.json'
+import { IPartialUser, PartialUserKeys } from '../Responses'
+
 import {
   IEncryptedToken,
   INewOauthAccountResponse,
@@ -249,6 +251,116 @@ class Utils {
       }
 
     return { success: true }
+  }
+
+  /**
+   * Gets a player from the database/
+   * @param db The database object
+   * @param userId The id of the user to fetch
+   */
+  public static async getPlayerById(
+    db: Knex,
+    userId: number
+  ): Promise<IPartialUser | null> {
+    const player = await db.select<IPartialUser | null>(...PartialUserKeys)
+      .from('Players')
+      .where(
+        'UserId',
+        userId
+      )
+      .first()
+
+    return player
+  }
+
+  /**
+   * Links a userId from the players database to a website account.
+   * @param db The database object.
+   * @param accountId The account id of the web user.
+   * @param userId The user id of the beef account.
+   */
+  public static async linkAccount(
+    db: Knex,
+    accountId: string,
+    userId: number
+  ) {
+    // validate the userid
+    if (isNaN(userId) ||
+        userId > Number.MAX_SAFE_INTEGER ||
+        userId < 1)
+      return {
+        success: false,
+        message: 'invalid userId provided.'
+      }
+
+    // once the userId is validated
+    // check if this userId is a valid user
+    const player = await Utils.getPlayerById(db, userId)
+    if (!player)
+      return {
+        success: false,
+        message: 'user does not exist.'
+      }
+
+    // check if the userId is linked to any accounts
+    // by first, fetching all users
+    const users = await db.select<{
+        AccountId: string
+        Accounts: Buffer
+      }[]>(
+        [
+          'AccountId',
+          'Accounts'
+        ]
+      )
+      .from(config.db.table)
+
+    let hasFailed = false
+
+    // loop through each user and check if
+    // the userid is linked
+    for (const user of users) {
+      // convert the Accounts buffer to a Uint32Array
+      const buff = new Uint32Array(user.Accounts?.buffer)
+      if (buff.includes(userId)) {
+        hasFailed = true
+
+        break
+      }
+    }
+
+    // if the userid is not linked, we can link it
+    if (!hasFailed) { 
+      const user = users.find(
+        (u) => u.AccountId === accountId
+      )
+
+      // add new account to user
+      const idBuffer = Buffer.alloc(4)
+      idBuffer.writeUInt32LE(userId)
+
+      user.Accounts = Buffer.concat(
+        [
+          user.Accounts,
+          idBuffer
+        ]
+      )
+
+      await db.update(
+          {
+            Accounts: user.Accounts
+          }
+        )
+        .from(config.db.table)
+        .where(
+          'AccountId',
+          accountId
+        )
+    }
+
+    return {
+      success: !hasFailed
+    }
   }
 }
 

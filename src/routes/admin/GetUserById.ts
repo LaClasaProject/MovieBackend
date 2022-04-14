@@ -1,13 +1,10 @@
 import Path from '../../base/Path'
-import { 
-  IPartialUser,
-  PartialUserKeys
-} from '../../Responses'
-
 import {
   HttpReq,
   IRoute
 } from '../../Types'
+
+import Utils from '../../utils'
 
 class GetUserById extends Path implements IRoute {
   public path   = '/admin/user/:id'
@@ -25,10 +22,10 @@ class GetUserById extends Path implements IRoute {
     if (isNaN(id) || id > Number.MAX_SAFE_INTEGER || id < 1)
       throw new Error('invalid UserId was provided.')
 
-    const user = await this.server.db.select<IPartialUser>(...PartialUserKeys)
-      .from('players')
-      .where('UserId', id)
-      .first()
+    const user = await Utils.getPlayerById(
+      this.server.db,
+      id
+    )
 
     return {
       data: user || null,

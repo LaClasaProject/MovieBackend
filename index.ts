@@ -18,6 +18,8 @@ import GetWebUser from './src/routes/api/GetWebUser'
 import SetWebUsername from './src/routes/api/SetWebUsername'
 import SearchPlayer from './src/routes/api/SearchPlayer'
 
+import LinkAccount from './src/routes/api/LinkAccount'
+
 const main = async () => {
   const http = new HttpServer(config as any)
 
@@ -44,6 +46,7 @@ const main = async () => {
   await http.register(GetWebUser)
   await http.register(SetWebUsername)
   await http.register(SearchPlayer)
+  await http.register(LinkAccount)
 
   try {
     await http.ready()
