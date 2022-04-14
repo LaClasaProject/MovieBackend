@@ -11,6 +11,7 @@ class LinkAccount extends Path implements IRoute {
   public path   = '/api/players/link'
   public method = 'post'
   
+  // todo: add password verification
   public async onRequest(req: HttpReq) {
     const encryptedJwt = req.headers.authorization,
       token = await Utils.decryptJWT<IDecodedJwtToken>(encryptedJwt)
@@ -24,10 +25,15 @@ class LinkAccount extends Path implements IRoute {
     const userId = Number(
         (req.body as any).userId
       ),
+      password = (
+        (req.body as any).password
+          ?.toString()
+      ),
       link = await Utils.linkAccount(
         this.server.db,
         token.accountId,
-        userId
+        userId,
+        password
       )
 
     return {

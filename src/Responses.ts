@@ -23,6 +23,15 @@ interface IPartialUser {
   LastLogin: number
 }
 
+const UserKeys = [
+  ...PartialUserKeys,
+  'Password'
+]
+
+interface IUser extends IPartialUser {
+  Password?: Buffer
+}
+
 const WebAccountKeys = [
   'AccountId',
   'DiscordId',
@@ -46,5 +55,8 @@ export {
   IPartialUser,
 
   WebAccountKeys,
-  IWebAccount
+  IWebAccount,
+  
+  UserKeys,
+  IUser
 }

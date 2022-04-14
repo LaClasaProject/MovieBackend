@@ -2,14 +2,15 @@ import {
   createCipheriv,
   createDecipheriv,
   randomBytes,
-  randomUUID
+  randomUUID,
+  createHash
 } from 'crypto'
 
 import jsonwebtoken from 'jsonwebtoken'
 import { Knex } from 'knex'
 
 import config from '../../config.json'
-import { IPartialUser, PartialUserKeys } from '../Responses'
+import { IUser, UserKeys, PartialUserKeys } from '../Responses'
 
 import {
   IEncryptedToken,
@@ -260,17 +261,33 @@ class Utils {
    */
   public static async getPlayerById(
     db: Knex,
-    userId: number
-  ): Promise<IPartialUser | null> {
-    const player = await db.select<IPartialUser | null>(...PartialUserKeys)
-      .from('Players')
-      .where(
-        'UserId',
-        userId
-      )
-      .first()
+    userId: number,
+    withPassword?: boolean
+  ): Promise<IUser | null> {
+    const player =
+      await db.select<IUser | null>(
+          withPassword ? UserKeys : PartialUserKeys
+        )
+        .from('Players')
+        .where(
+          'UserId',
+          userId
+        )
+        .first()
 
     return player
+  }
+
+  public static hashString(str: string) {
+    return new Promise(
+      (resolve) => {
+        const hashedStr = createHash('sha512')
+          .update(str)
+          .digest('hex')
+
+        return resolve(hashedStr)
+      }
+    )
   }
 
   /**
@@ -282,7 +299,8 @@ class Utils {
   public static async linkAccount(
     db: Knex,
     accountId: string,
-    userId: number
+    userId: number,
+    password: string
   ) {
     // validate the userid
     if (isNaN(userId) ||
@@ -293,13 +311,30 @@ class Utils {
         message: 'invalid userId provided.'
       }
 
+    // validate password
+    if (!password)
+      return {
+        success: false,
+        message: 'please provide a password for user verification purposes.'
+      }
+
     // once the userId is validated
     // check if this userId is a valid user
-    const player = await Utils.getPlayerById(db, userId)
+    const player = await Utils.getPlayerById(db, userId, true)
     if (!player)
       return {
         success: false,
         message: 'user does not exist.'
+      }
+
+    // compare the password for linking
+    const hashedPassword = await Utils.hashString(password),
+      passwordInDatabase = player.Password.toString('hex')
+
+    if (hashedPassword !== passwordInDatabase)
+      return {
+        success: false,
+        message: 'password doesn\'t match for user.'
       }
 
     // check if the userId is linked to any accounts
