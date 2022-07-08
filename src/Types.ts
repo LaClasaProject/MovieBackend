@@ -17,31 +17,6 @@ interface IDatabaseConfig {
   user: string
   password: string
   database: string
-  table: string
-}
-
-interface IOAuthConfig {
-  clientId: string
-  clientSecret: string
-  redirect_uri: string
-  scopes: string
-  endpoint: string
-
-  otherEndpoint?: string
-}
-
-interface IDiscordAccessToken {
-  access_token: string
-  expires_in: number
-  refresh_token: string
-  scope: string
-  token_type: string
-}
-
-interface IGithubAccessToken {
-  access_token: string
-  scope: string
-  token_type: string
 }
 
 interface IHttpConfig {
@@ -52,69 +27,22 @@ interface IHttpConfig {
 interface IConfig {
   http: IHttpConfig
   db: IDatabaseConfig
-
-  oauth: {
-    [key: string]: IOAuthConfig
-  },
-
-  jwt_secret: string
-  jwt_default_expiry: number
-
-  admin_key: string
-  cypher_iv_key: string
 }
 
-interface IEncryptedToken {
-  iv: string
-  token: string
-}
+interface IVideoData {
+  VideoId: string
+  IsSeries: boolean
 
-// stuff for possible types for decrypt jwt
-interface IDecodedJwtTokenDiscordData {
-  type: 'discord_oauth'
-  oauth: IDiscordAccessToken
-  accountId: string
-}
+  MetaTitle: string
+  MetaDesc: string
 
-interface IDecodedJwtTokenGoogleData {
-  type: 'google_oauth'
-  accountId: string
-}
+  Seasons?: number
+  Episodes?: Buffer // 1 byte = 1 season containing amount of episodes, e.g Buffer <07>
 
-interface IDecodedJwtTokenGithubData {
-  type: 'github_oauth'
-  oauth: IGithubAccessToken
-  accountId: string
-}
+  PosterUrl?: string
+  CoverUrl?: string
 
-type OauthEntries = 'GoogleId' | 'DiscordId' | 'GithubId'
-
-interface IOauthAccountEntry {
-  idColumn: OauthEntries
-  userId: string
-}
-
-interface IOauthAccountUpdate {
-  accountId: string
-  idColumn: OauthEntries
-  userId: string
-}
-
-type IDecodedJwtToken = IDecodedJwtTokenDiscordData | IDecodedJwtTokenGoogleData | IDecodedJwtTokenGithubData
-
-interface INewOauthAccountResponse {
-  accountId: string
-  isNew: boolean
-}
-
-interface ISetUsernameOptions {
-  username: string
-  accountId: string
-}
-
-interface ISetUsernameResponse {
-  success: boolean
-  message?: string
+  IsAvailable: boolean
 }
 
 export {
@@ -128,23 +56,5 @@ export {
   HttpRes,
 
   PathReturnable,
-  IDiscordAccessToken,
-
-  IEncryptedToken,
-  IDecodedJwtToken,
-
-  IDecodedJwtTokenDiscordData,
-  IDecodedJwtTokenGoogleData,
-
-  IOauthAccountEntry,
-  IGithubAccessToken,
-
-  IDecodedJwtTokenGithubData,
-  INewOauthAccountResponse,
-
-  ISetUsernameOptions,
-  ISetUsernameResponse,
-
-  OauthEntries,
-  IOauthAccountUpdate
+  IVideoData
 }

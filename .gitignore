@@ -134,3 +134,6 @@ dist/
 
 # let's not include config file
 config.json
+
+# Ignore movies
+movies/

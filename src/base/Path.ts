@@ -38,6 +38,9 @@ class Path implements IRoute {
                 )
               }
 
+              if (result.willPipe)
+                break
+
               if (typeof result.code === 'number')
                 res.statusCode = result.code
 

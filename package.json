@@ -1,5 +1,5 @@
 {
-  "name": "beef-backend",
+  "name": "movie-backend",
   "version": "0.1.0",
   "main": "index.js",
   "license": "GPL-3.0",
@@ -9,17 +9,14 @@
   },
   "dependencies": {
     "@types/node": "^17.0.23",
-    "axios": "^0.26.1",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
-    "jsonwebtoken": "^8.5.1",
     "knex": "^1.0.4",
     "mysql": "^2.18.1",
     "restana": "^4.9.3",
     "typescript": "^4.6.3"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/body-parser": "^1.19.2",
     "@types/cors": "^2.8.12"
   }

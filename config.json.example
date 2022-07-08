@@ -1,43 +1,14 @@
 {
   "http": {
-    "port": 3000,
+    "port": 8080,
     "cleanedJsonResponses": false
-  },
-
-  "oauth": {
-    "discord": {
-      "clientId": "",
-      "clientSecret": "",
-      "redirect_uri": "http://localhost:8080/callback/discord",
-      "scopes": "identify",
-      "endpoint": "https://discord.com/api/v8"
-      "otherEndpoint": null
-    },
-
-    "github": {
-      "clientId": "",
-      "clientSecret": "",
-      "redirect_uri": "http://localhost:8080/callback/github",
-      "scopes": "user",
-      "endpoint": "https://github.com/",
-      "otherEndpoint": "https://api.github.com"
-    }
   },
 
   "db": {
     "host": "127.0.0.1",
     "port": 3306,
-    "user": "user",
+    "user": "root",
     "password": "password",
-    "database": "beef",
-    "table": "Web"
-  },
-
-  "jwt_secret": "beef_secret_key",
-  "jwt_default_expiry": "1d",
-  
-  "admin_key": "beef_admin_key"
-
-  // this must be exactly 32 chars
-  "cypher_iv_key": "5Xg0BfZf1z3QQkJ4aefcKmQfTptD741C"
+    "database": "movie"
+  }
 }

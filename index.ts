@@ -4,21 +4,11 @@ import HttpServer from './src/base/HttpServer'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
-
 // import paths
-import DiscordOauthToken from './src/routes/oauth/token/Discord'
-import GithubOauthToken from './src/routes/oauth/token/Github'
+import GetVideoById from './src/routes/video/GetVideoById'
+import GetVideos from './src/routes/video/GetVideos'
 
-import GetUserById from './src/routes/admin/GetUserById'
-import GetUsers from './src/routes/admin/GetUsers'
-
-import GetMe from './src/routes/oauth/GetMe'
-import GetWebUser from './src/routes/api/GetWebUser'
-
-import SetWebUsername from './src/routes/api/SetWebUsername'
-import SearchPlayer from './src/routes/api/SearchPlayer'
-
-import LinkAccount from './src/routes/api/LinkAccount'
+import GetVideo from './src/routes/video/GetVideoData'
 
 const main = async () => {
   const http = new HttpServer(config as any)
@@ -33,20 +23,10 @@ const main = async () => {
   )
   
   // register paths
-  await http.register(GetUsers)
-  await http.register(GetUserById)
+  await http.register(GetVideoById)
+  await http.register(GetVideos)
 
-
-  await http.register(DiscordOauthToken)
-  await http.register(GithubOauthToken)
-
-  await http.register(GetMe)
-
-  // api routes for the web
-  await http.register(GetWebUser)
-  await http.register(SetWebUsername)
-  await http.register(SearchPlayer)
-  await http.register(LinkAccount)
+  await http.register(GetVideo)
 
   try {
     await http.ready()

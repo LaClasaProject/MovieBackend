@@ -1,7 +1,11 @@
 import restana from 'restana'
 import knex, { Knex } from 'knex'
 
-import { IConfig } from '../Types'
+import {
+  IConfig,
+  IVideoData
+} from '../Types'
+
 import Path from './Path'
 
 class HttpServer {
@@ -9,6 +13,10 @@ class HttpServer {
   public routes: Map<string, Path> = new Map()
 
   public db: Knex<any, unknown[]>
+  public fileNameCache: Map<string, string | string[]> = new Map()
+
+  public videoMeta: Map<string, IVideoData> = new Map()
+  public PROCESS_CWD = process.cwd()
 
   constructor(public config: IConfig) {
     this.db = knex({
@@ -20,25 +28,27 @@ class HttpServer {
   public async ready() {
     // prepare tables
     if (
-      !(await this.db.schema.hasTable(this.config.db.table))
-    ) {
+      !(await this.db.schema.hasTable('Videos'))
+    )
       await this.db.schema.createTable(
-        this.config.db.table, (table) => {
-          table.string('AccountId', 64)
+        'Videos', (table) => {
+          table.string('VideoId', 64)
             .notNullable()
             .primary()
+          table.boolean('IsSeries')
+          
+          table.text('MetaTitle')
+          table.text('MetaDesc')
 
-          table.text('DiscordId')
-          table.text('GoogleId')
-          table.text('GithubId')
+          table.tinyint('Seasons')
+          table.binary('Episodes')
 
-          table.binary('Accounts')
+          table.text('PosterUrl')
+          table.text('CoverUrl')
 
-          table.string('Username', 36)
-          table.specificType('Password', 'tinyblob')
+          table.boolean('IsAvailable')
         }
       )
-    }
 
     return this.restana.start(this.config.http.port)
   }
