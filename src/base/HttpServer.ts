@@ -48,6 +48,8 @@ class HttpServer {
 
           table.boolean('IsAvailable')
           table.string('VideoUrl')
+
+          table.bigint('AddedAt')
         }
       )
 

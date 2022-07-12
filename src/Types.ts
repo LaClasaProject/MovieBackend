@@ -46,6 +46,8 @@ interface IVideoData {
 
   IsAvailable: boolean
   VideoUrl?: string
+
+  AddedAt: number
 }
 
 interface IAddVideoProps {

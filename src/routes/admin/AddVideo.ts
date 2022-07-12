@@ -58,7 +58,9 @@ class AddVideo extends Path implements IRoute {
         VideoUrl: data.video?.replaceAll(
           '{videoId}',
           videoId
-        )
+        ),
+
+        AddedAt: Date.now()
       }
     )
 
