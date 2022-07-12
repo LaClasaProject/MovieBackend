@@ -64,7 +64,10 @@ class AddVideo extends Path implements IRoute {
 
     return {
       code: result ? 200 : 400,
-      message: result ? 'Video added.' : 'Video not added.'
+      message: result ? 'Video added.' : 'Video not added.',
+      data: {
+        videoId
+      }
     }
   }
 }
