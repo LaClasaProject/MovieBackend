@@ -46,7 +46,7 @@ class AddVideo extends Path implements IRoute {
         CoverUrl: data.cover,
 
         Seasons: data.seasons,
-        Episodes: data.episodes,
+        Episodes: Array.isArray(data.episodes) ? data.episodes : [],
 
         IsAvailable: data.isAvailable,
         VideoUrl: data.video?.replaceAll(
