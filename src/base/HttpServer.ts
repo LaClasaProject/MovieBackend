@@ -47,6 +47,7 @@ class HttpServer {
           table.text('CoverUrl')
 
           table.boolean('IsAvailable')
+          table.string('VideoUrl')
         }
       )
 

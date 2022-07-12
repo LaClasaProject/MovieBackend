@@ -10,5 +10,9 @@
     "user": "root",
     "password": "password",
     "database": "movie"
-  }
+  },
+
+  "adminKeys": [
+    "key1"
+  ]
 }

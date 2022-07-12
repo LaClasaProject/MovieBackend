@@ -10,8 +10,11 @@ import GetVideos from './src/routes/video/GetVideos'
 
 import GetVideo from './src/routes/video/GetVideoData'
 
+// admin only paths
+import AddVideo from './src/routes/admin/AddVideo'
+
 const main = async () => {
-  const http = new HttpServer(config as any)
+  const http = new HttpServer(config)
 
   // set restana middlewares
   http.restana.use(
@@ -27,6 +30,9 @@ const main = async () => {
   await http.register(GetVideos)
 
   await http.register(GetVideo)
+  
+  // admin only paths
+  await http.register(AddVideo)
 
   try {
     await http.ready()

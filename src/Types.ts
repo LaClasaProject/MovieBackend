@@ -27,6 +27,8 @@ interface IHttpConfig {
 interface IConfig {
   http: IHttpConfig
   db: IDatabaseConfig
+
+  adminKeys: string[]
 }
 
 interface IVideoData {
@@ -37,12 +39,29 @@ interface IVideoData {
   MetaDesc: string
 
   Seasons?: number
-  Episodes?: Buffer // 1 byte = 1 season containing amount of episodes, e.g Buffer <07>
+  Episodes?: Buffer | Array<number> // 1 byte = 1 season containing amount of episodes, e.g Buffer <07>
 
   PosterUrl?: string
   CoverUrl?: string
 
   IsAvailable: boolean
+  VideoUrl?: string
+}
+
+interface IAddVideoProps {
+  title: string
+  description: string
+
+  isSeries?: boolean
+  isAvailable?: boolean
+
+  poster?: string
+  cover?: string
+
+  seasons?: number
+  episodes?: number[]
+
+  video?: string
 }
 
 export {
@@ -56,5 +75,7 @@ export {
   HttpRes,
 
   PathReturnable,
-  IVideoData
+  IVideoData,
+
+  IAddVideoProps
 }

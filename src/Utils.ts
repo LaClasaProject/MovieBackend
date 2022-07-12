@@ -54,6 +54,48 @@ class Utils {
       .padStart(amount, val)
   }
 
+  public static async addVideo(
+    server: HttpServer,
+    data: IVideoData
+  ) {
+    const {
+      VideoId,
+      IsSeries,
+      MetaTitle,
+      MetaDesc,
+      Seasons,
+      Episodes,
+      PosterUrl,
+      CoverUrl,
+      IsAvailable,
+      VideoUrl
+    } = data
+
+    let result = false
+
+    try {
+      await server.db.insert(
+        {
+          VideoId,
+          IsSeries,
+          MetaTitle,
+          MetaDesc,
+          Seasons,
+          Episodes,
+          PosterUrl,
+          CoverUrl,
+          IsAvailable,
+          VideoUrl
+        }
+      )
+      .into('Videos')
+
+      result = true
+    } catch {}
+
+    return result
+  }
+
   public static async getFilePath(
     server: HttpServer,
     videoId: string
