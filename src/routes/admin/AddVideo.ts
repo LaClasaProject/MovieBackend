@@ -28,10 +28,15 @@ class AddVideo extends Path implements IRoute {
         message: 'Incorrect parameters.'
       }
 
+    if (!data.video)
+      data.video = ''
+
+    const videoId = randomUUID()
+
     const result = await Utils.addVideo(
       this.server,
       {
-        VideoId: randomUUID(),
+        VideoId: videoId,
         IsSeries: data.isSeries,
 
         MetaTitle: data.title,
@@ -44,7 +49,10 @@ class AddVideo extends Path implements IRoute {
         Episodes: data.episodes,
 
         IsAvailable: data.isAvailable,
-        VideoUrl: data.video
+        VideoUrl: data.video?.replaceAll(
+          '{videoId}',
+          videoId
+        )
       }
     )
 
