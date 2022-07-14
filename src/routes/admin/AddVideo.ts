@@ -9,7 +9,7 @@ import { randomUUID } from 'crypto'
 import Utils from '../../Utils'
 
 class AddVideo extends Path implements IRoute {
-  public path   = '/admin/new'
+  public path   = '/api/admin/new'
   public method = 'post'
 
   public async onRequest(req: HttpReq) {
