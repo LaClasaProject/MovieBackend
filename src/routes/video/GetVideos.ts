@@ -4,7 +4,7 @@ import { IRoute } from '../../Types'
 import Utils from '../../Utils'
 
 class GetVideos extends Path implements IRoute {
-  public path   = '/videos'
+  public path   = '/api/videos'
   public method = 'get'
 
   public async onRequest() {

@@ -6,7 +6,7 @@ import {
 import Utils from '../../Utils'
 
 class GetVideoData extends Path implements IRoute {
-  public path   = '/videos/:id'
+  public path   = '/api/videos/:id'
   public method = 'get'
 
   public async onRequest(req: HttpReq) {

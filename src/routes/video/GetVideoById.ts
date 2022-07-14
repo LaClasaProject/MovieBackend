@@ -11,7 +11,7 @@ import Utils from '../../Utils'
 const CHUNK_SIZE = (1024 * 1024) * 2
 
 class GetVideoById extends Path implements IRoute {
-  public path   = '/video/:id'
+  public path   = '/api/video/:id'
   public method = 'get'
 
   public async onRequest(req: HttpReq, res: HttpRes) {
