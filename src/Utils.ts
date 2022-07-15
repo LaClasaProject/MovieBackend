@@ -42,7 +42,11 @@ class Utils {
     const data = await server.db.select<IVideoData[]>('*')
       .from('Videos')
 
-    return data ?? []
+    return (
+      data ?? []
+    ).sort(
+      (a, b) => a.MetaTitle.localeCompare(b.MetaTitle)
+    )
   }
 
   public static pad(
