@@ -69,7 +69,8 @@ class Utils {
       CoverUrl,
       IsAvailable,
       VideoUrl,
-      AddedAt
+      AddedAt,
+      SubtitlePath
     } = data
 
     let result = false
@@ -87,7 +88,8 @@ class Utils {
           CoverUrl,
           IsAvailable,
           VideoUrl,
-          AddedAt
+          AddedAt,
+          SubtitlePath
         }
       )
       .into('Videos')

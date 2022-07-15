@@ -48,6 +48,7 @@ interface IVideoData {
   VideoUrl?: string
 
   AddedAt: number
+  SubtitlePath?: string
 }
 
 interface IAddVideoProps {
@@ -64,6 +65,7 @@ interface IAddVideoProps {
   episodes?: number[]
 
   video?: string
+  subs?: string
 }
 
 export {
