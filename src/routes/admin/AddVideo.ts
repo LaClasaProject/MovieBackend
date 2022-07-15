@@ -33,7 +33,7 @@ class AddVideo extends Path implements IRoute {
 
     for (const [key, value] of data)
       if (typeof data[key] === 'string')
-        data[key] = data.replaceAll(
+        data[key] = data[key].replaceAll(
           '{videoId}',
           data.videoId
         )
