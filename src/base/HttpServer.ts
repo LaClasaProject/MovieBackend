@@ -50,6 +50,7 @@ class HttpServer {
           table.string('VideoUrl')
 
           table.bigint('AddedAt')
+          table.text('SubtitlePath')
         }
       )
 
