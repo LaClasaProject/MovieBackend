@@ -1,139 +1,85 @@
-import HttpServer from './base/HttpServer'
-import { IVideoData } from './Types'
+import { IncomingMessage, ServerResponse } from 'http'
+import { RequestExtensions, ResponseExtensions } from 'restana'
 
-import { existsSync } from 'fs'
+type HttpReq = IncomingMessage & RequestExtensions
+type HttpRes = ServerResponse & ResponseExtensions
 
-class Utils {
-  public static async getVideoData(
-    server: HttpServer,
-    videoId: string
-  ): Promise<IVideoData | null | undefined> {
-    const fileMeta = server.videoMeta.get(videoId)
-    if (fileMeta)
-      return fileMeta
+type PathReturnable = number | string | object | any[]
 
-    const data = await server.db.select('*')
-      .from('Videos')
-      .whereRaw(
-        'VideoId = ?',
-        [
-          videoId
-        ]
-      )
-      .first<IVideoData>()
-
-    if (data) {
-      data.IsSeries = Boolean(data.IsSeries)
-      server.videoMeta.set(videoId, data)
-
-        // clear cache after 2 minutes
-      setTimeout(
-        () => {
-          server.videoMeta.delete(videoId)
-        },
-        (60 * 1000) * 2
-      )
-    }
-
-    return data
-  }
-
-  public static async getVideos(server: HttpServer) {
-    const data = await server.db.select<IVideoData[]>('*')
-      .from('Videos')
-
-    return data ?? []
-  }
-
-  public static pad(
-    num: number,
-    val: any,
-    amount: number
-  ) {
-    return num.toString()
-      .padStart(amount, val)
-  }
-
-  public static async addVideo(
-    server: HttpServer,
-    data: IVideoData
-  ) {
-    const {
-      VideoId,
-      IsSeries,
-      MetaTitle,
-      MetaDesc,
-      Seasons,
-      Episodes,
-      PosterUrl,
-      CoverUrl,
-      IsAvailable,
-      VideoUrl,
-      AddedAt,
-      SubtitlePath
-    } = data
-
-    let result = false
-
-    try {
-      await server.db.insert(
-        {
-          VideoId,
-          IsSeries,
-          MetaTitle,
-          MetaDesc,
-          Seasons,
-          Episodes,
-          PosterUrl,
-          CoverUrl,
-          IsAvailable,
-          VideoUrl,
-          AddedAt,
-          SubtitlePath
-        }
-      )
-      .into('Videos')
-
-      result = true
-    } catch {}
-
-    return result
-  }
-
-  public static async getFilePath(
-    server: HttpServer,
-    videoId: string
-  ) {
-    const meta = await Utils.getVideoData(server, videoId)
-    if (!meta) return null
-
-    const cachedPath = server.fileNameCache.get(videoId)
-      if (cachedPath)
-        return cachedPath
-    
-    if (!existsSync(`${server.PROCESS_CWD}/movies/${videoId}`))
-      return null
-
-    if (!meta.IsSeries) {    
-      const path = `${server.PROCESS_CWD}/movies/${videoId}/video.mp4`
-      server.fileNameCache.set(videoId, path)
-
-      return path
-    } else {
-      // for series
-      const seasons = meta.Seasons,
-        paths = []
-
-      for (let i = 0; i < seasons; i++)
-        for (let j = 0; j < meta.Episodes[0]; j++)
-          paths.push(
-            `${server.PROCESS_CWD}/movies/${videoId}/S${Utils.pad(i + 1, '0', 2)}/E${Utils.pad(j + 1, '0', 2)}.mp4`
-          )
-
-      server.fileNameCache.set(videoId, paths)
-      return paths
-    }
-  }
+interface IRoute {
+  path: string
+  method: string
 }
 
-export default Utils
+interface IDatabaseConfig {
+  host: string
+  port: number
+  user: string
+  password: string
+  database: string
+}
+
+interface IHttpConfig {
+  port: number
+  cleanedJsonResponses: boolean
+}
+
+interface IConfig {
+  http: IHttpConfig
+  db: IDatabaseConfig
+
+  adminKeys: string[]
+}
+
+interface IVideoData {
+  VideoId: string
+  IsSeries: boolean
+
+  MetaTitle: string
+  MetaDesc: string
+
+  Seasons?: number
+  Episodes?: Buffer | Array<number> // 1 byte = 1 season containing amount of episodes, e.g Buffer <07>
+
+  PosterUrl?: string
+  CoverUrl?: string
+
+  IsAvailable: boolean
+  VideoUrl?: string
+
+  AddedAt: number
+  SubtitlePath?: string
+}
+
+interface IAddVideoProps {
+  title: string
+  description: string
+
+  isSeries?: boolean
+  isAvailable?: boolean
+
+  poster?: string
+  cover?: string
+
+  seasons?: number
+  episodes?: number[]
+
+  video?: string
+  subs?: string
+}
+
+export {
+  IRoute,
+  IConfig,
+
+  IHttpConfig,
+  IDatabaseConfig,
+
+  HttpReq,
+  HttpRes,
+
+  PathReturnable,
+  IVideoData,
+
+  IAddVideoProps
+}
