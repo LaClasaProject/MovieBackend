@@ -30,43 +30,44 @@ class AddVideo extends Path implements IRoute {
 
     if (!data.video)
       data.video = ''
+    
+    const videoId = randomUUID()
 
-    for (const [key, value] of data)
+    for (const [key, value] of Object.entries(data))
       if (typeof data[key] === 'string')
         data[key] = data[key].replaceAll(
           '{videoId}',
-          data.videoId
+          videoId
         )
 
-    const videoId = randomUUID(),
-      result = await Utils.addVideo(
-        this.server,
-        {
-          VideoId: videoId,
-          IsSeries: data.isSeries,
+    const result = await Utils.addVideo(
+      this.server,
+      {
+        VideoId: videoId,
+        IsSeries: data.isSeries,
 
-          MetaTitle: data.title,
-          MetaDesc: data.description,
+        MetaTitle: data.title,
+        MetaDesc: data.description,
 
-          PosterUrl: data.poster,
-          CoverUrl: data.cover,
+        PosterUrl: data.poster,
+        CoverUrl: data.cover,
 
-          Seasons: data.seasons,
-          Episodes: Buffer.from(
-            Array.isArray(data.episodes) ? (
-              data.episodes.filter(
-                (item) => !isNaN(item)
-              )
-            ) : []
-          ),
+        Seasons: data.seasons,
+        Episodes: Buffer.from(
+          Array.isArray(data.episodes) ? (
+            data.episodes.filter(
+              (item) => !isNaN(item)
+            )
+          ) : []
+        ),
 
-          IsAvailable: data.isAvailable,
-          VideoUrl: data.videe,
+        IsAvailable: data.isAvailable,
+        VideoUrl: data.video,
 
-          AddedAt: Date.now(),
-          SubtitlePath: data.subs
-        }
-      )
+        AddedAt: Date.now(),
+        SubtitlePath: data.subs
+      }
+    )
 
     return {
       code: result ? 200 : 400,
