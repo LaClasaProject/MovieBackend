@@ -1,6 +1,7 @@
 import Path from '../../base/Path'
 import {
   HttpReq,
+  IAddVideoProps,
   IRoute
  } from '../../Types'
 
