@@ -12,6 +12,7 @@ import GetVideo from './src/routes/video/GetVideoData'
 
 // admin only paths
 import AddVideo from './src/routes/admin/AddVideo'
+import UpdateVideoData from './src/routes/admin/UpdateVideoData'
 
 const main = async () => {
   const http = new HttpServer(config)
@@ -33,6 +34,7 @@ const main = async () => {
   
   // admin only paths
   await http.register(AddVideo)
+  await http.register(UpdateVideoData)
 
   try {
     await http.ready()

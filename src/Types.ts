@@ -31,6 +31,23 @@ interface IConfig {
   adminKeys: string[]
 }
 
+interface IPartialVideoData {
+  SubtitlePath?: string
+  IsSeries?: boolean
+
+  MetaTitle?: string
+  MetaDesc?: string
+
+  Seasons?: number
+  Episodes?: Buffer | Array<number> // 1 byte = 1 season containing amount of episodes, e.g Buffer <07>
+
+  PosterUrl?: string
+  CoverUrl?: string
+
+  IsAvailable?: boolean
+  VideoUrl?: string
+}
+
 interface IVideoData {
   VideoId: string
   IsSeries: boolean
@@ -81,5 +98,6 @@ export {
   PathReturnable,
   IVideoData,
 
-  IAddVideoProps
+  IAddVideoProps,
+  IPartialVideoData
 }

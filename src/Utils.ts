@@ -1,7 +1,24 @@
 import HttpServer from './base/HttpServer'
-import { IVideoData } from './Types'
+import { IVideoData, IAddVideoProps, IPartialVideoData } from './Types'
 
 import { existsSync } from 'fs'
+
+const videoProps = {
+  title: 'MetaTitle',
+  description: 'MetaDesc',
+  
+  poster: 'PosterUrl',
+  cover: 'CoverUrl',
+
+  video: 'CoverUrl',
+  subs: 'SubtitlePath',
+
+  episodes: 'Episodes',
+  seasons: 'Seasons',
+
+  isAvailable: 'IsAvailable',
+  isSeries: 'IsSeries',
+}
 
 class Utils {
   public static async getVideoData(
@@ -26,7 +43,7 @@ class Utils {
       data.IsSeries = Boolean(data.IsSeries)
       server.videoMeta.set(videoId, data)
 
-        // clear cache after 2 minutes
+      // clear cache after 2 minutes
       setTimeout(
         () => {
           server.videoMeta.delete(videoId)
@@ -103,6 +120,47 @@ class Utils {
 
     return result
   }
+
+  public static async updateVideoData(
+    server: HttpServer,
+    videoId: string,
+    data: IAddVideoProps
+   ) {
+    const partialVideoData: IPartialVideoData = {},
+      keys = Object.keys(data)
+
+    for (const key of keys) {
+      if (!videoProps[key]) continue
+      
+      if (typeof data[key] === 'string')
+        data[key] = data[key].replaceAll(
+          '{videoId}',
+          videoId
+        )
+
+      if (Array.isArray(data[key]))
+        data[key] = Buffer.from(data[key])
+
+      partialVideoData[
+        videoProps[key]
+      ] = data[key]
+    }
+
+    try {
+      return await server.db('Videos')
+        .where(
+          {
+            VideoId: videoId
+          }
+        )
+        .update(
+          partialVideoData,
+          keys
+        )
+    } catch {
+      return null
+    }
+   }
 
   public static async getFilePath(
     server: HttpServer,
