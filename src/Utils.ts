@@ -147,16 +147,15 @@ class Utils {
     }
 
     try {
-      return await server.db('Videos')
+      await server.db('Videos')
         .where(
           {
             VideoId: videoId
           }
         )
-        .update(
-          partialVideoData,
-          keys
-        )
+        .update(partialVideoData)
+
+      return data
     } catch {
       return null
     }
