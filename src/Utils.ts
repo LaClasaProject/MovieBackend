@@ -10,7 +10,7 @@ const videoProps = {
   poster: 'PosterUrl',
   cover: 'CoverUrl',
 
-  video: 'CoverUrl',
+  video: 'VideoUrl',
   subs: 'SubtitlePath',
 
   episodes: 'Episodes',
