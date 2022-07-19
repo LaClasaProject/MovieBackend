@@ -53,6 +53,25 @@ class HttpServer {
           table.text('SubtitlePath')
         }
       )
+      
+    if (
+      !(await this.db.schema.hasTable('Users'))
+    )
+      await this.db.schema.createTable(
+        'Users', (table) => {
+          table.string('UserId', 64)
+            .notNullable()
+            .primary()
+
+          table.text('Password')
+          table.text('Email')
+
+          table.string('Username', 32)
+          table.bigint('CreatedAt')
+
+          table.bigint('LastLoginDate')
+        }
+      )
 
     return this.restana.start(this.config.http.port)
   }
