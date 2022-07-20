@@ -130,7 +130,7 @@ class Utils {
       keys = Object.keys(data)
 
     for (const key of keys) {
-      if (!videoProps[key]) continue
+      if (videoProps[key] === undefined) continue
       
       if (typeof data[key] === 'string')
         data[key] = data[key].replaceAll(
