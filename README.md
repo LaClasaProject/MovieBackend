@@ -2,6 +2,12 @@
 Backend service for the "Movie" project.
 Also serves as a host for the .mp4 files of the movies/series.
 
+## TODO List
+- [ ] User Login/Signup system.
+  - [ ] Playlists.
+  
+- [ ] Move database to MongoDB.
+
 ## Adding video files
   - Create a folder named `/movies`.  
   - Inside that folder, you can create another folder for each movie/series.
