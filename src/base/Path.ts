@@ -3,7 +3,7 @@ import {
   IRoute,
   HttpRes,
   PathReturnable
-} from '../Types'
+} from '../types/Http'
 
 import HttpServer from './HttpServer'
 

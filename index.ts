@@ -4,15 +4,11 @@ import HttpServer from './src/base/HttpServer'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
-// import paths
-import GetVideoById from './src/routes/video/GetVideoById'
-import GetVideos from './src/routes/video/GetVideos'
+// v2 paths
+import GetVideoByIdV2 from './src/routes/video/GetVideoById'
+import AddVideoV2 from './src/routes/video/AddVideo'
 
-import GetVideo from './src/routes/video/GetVideoData'
-
-// admin only paths
-import AddVideo from './src/routes/admin/AddVideo'
-import UpdateVideoData from './src/routes/admin/UpdateVideoData'
+import GetVideosV2 from './src/routes/video/GetVideos'
 
 const main = async () => {
   const http = new HttpServer(config)
@@ -25,16 +21,12 @@ const main = async () => {
   http.restana.use(
     cors()
   )
-  
-  // register paths
-  await http.register(GetVideoById)
-  await http.register(GetVideos)
 
-  await http.register(GetVideo)
-  
-  // admin only paths
-  await http.register(AddVideo)
-  await http.register(UpdateVideoData)
+  // v2 paths
+  await http.register(GetVideoByIdV2)
+  await http.register(AddVideoV2)
+
+  await http.register(GetVideosV2)
 
   try {
     await http.ready()

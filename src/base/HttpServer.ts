@@ -1,77 +1,34 @@
 import restana from 'restana'
-import knex, { Knex } from 'knex'
-
-import {
-  IConfig,
-  IVideoData
-} from '../Types'
+import { IConfig } from '../types/Config'
 
 import Path from './Path'
+import Utils from '../Utils'
+
+import Models from '../Schemas'
+import { connect } from 'mongoose'
 
 class HttpServer {
   public restana = restana()
   public routes: Map<string, Path> = new Map()
 
-  public db: Knex<any, unknown[]>
-  public fileNameCache: Map<string, string | string[]> = new Map()
-
-  public videoMeta: Map<string, IVideoData> = new Map()
   public PROCESS_CWD = process.cwd()
+  public utils = new Utils(this)
 
-  constructor(public config: IConfig) {
-    this.db = knex({
-      client: 'mysql',
-      connection: this.config.db
-    })
-  }
+  public models = Models
+
+  constructor(public config: IConfig) {}
 
   public async ready() {
-    // prepare tables
-    if (
-      !(await this.db.schema.hasTable('Videos'))
+    await connect(
+      `mongodb://${this.config.db.host}:${this.config.db.port}`,
+      {
+        user: this.config.db.user,
+        pass: this.config.db.pass,
+
+        dbName: this.config.db.dbName,
+        authSource: this.config.db.authSource
+      }
     )
-      await this.db.schema.createTable(
-        'Videos', (table) => {
-          table.string('VideoId', 64)
-            .notNullable()
-            .primary()
-          table.boolean('IsSeries')
-          
-          table.text('MetaTitle')
-          table.text('MetaDesc')
-
-          table.tinyint('Seasons')
-          table.binary('Episodes')
-
-          table.text('PosterUrl')
-          table.text('CoverUrl')
-
-          table.boolean('IsAvailable')
-          table.string('VideoUrl')
-
-          table.bigint('AddedAt')
-          table.text('SubtitlePath')
-        }
-      )
-      
-    if (
-      !(await this.db.schema.hasTable('Users'))
-    )
-      await this.db.schema.createTable(
-        'Users', (table) => {
-          table.string('UserId', 64)
-            .notNullable()
-            .primary()
-
-          table.text('Password')
-          table.text('Email')
-
-          table.string('Username', 32)
-          table.bigint('CreatedAt')
-
-          table.bigint('LastLoginDate')
-        }
-      )
 
     return this.restana.start(this.config.http.port)
   }

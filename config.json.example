@@ -1,15 +1,18 @@
 {
   "http": {
     "port": 8080,
-    "cleanedJsonResponses": false
+    "cleanedJsonResponses": true
   },
 
   "db": {
     "host": "127.0.0.1",
-    "port": 3306,
-    "user": "root",
-    "password": "password",
-    "database": "movie"
+    "port": 27017,
+
+    "user": "admin",
+    "pass": "password",
+
+    "dbName": "videos",
+    "authSource": "admin"
   },
 
   "adminKeys": [

@@ -1,18 +1,21 @@
 import Path from '../../base/Path'
-import { IRoute } from '../../Types'
+import {
+  HttpReq,
+  IRoute
+} from '../../types/Http'
 
-import Utils from '../../Utils'
-
-class GetVideos extends Path implements IRoute {
-  public path   = '/api/videos'
+class GetVideoById extends Path implements IRoute {
+  public path   = '/api/v2/videos'
   public method = 'get'
 
-  public async onRequest() {
+  public async onRequest(req: HttpReq) {
+    const videos = await this.server.utils.getVideos()
+
     return {
-      data: await Utils.getVideos(this.server),
+      data: videos,
       code: 200
     }
   }
 }
 
-export default GetVideos
+export default GetVideoById
