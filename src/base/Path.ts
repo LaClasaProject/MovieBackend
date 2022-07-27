@@ -11,6 +11,7 @@ class Path implements IRoute {
   public path   = '/'
   public method = 'get'
 
+  public adminOnly = false
   public server: HttpServer
 
   public register(server: HttpServer, log: boolean = false) {
@@ -19,6 +20,25 @@ class Path implements IRoute {
     server.restana[this.method](
       this.path,
       async (req: HttpReq, res: HttpRes) => {
+        const adminKey = req.headers.authorization
+        if (
+          this.adminOnly &&
+          !this.server.config.adminKeys.includes(adminKey)
+        ) {
+          const result = {
+            error: true,
+            message: 'You are unauthorized to visit this page.',
+            code: 401
+          }
+          res.statusCode = result.code
+
+          return res.send(
+            this.server.config.http.cleanedJsonResponses ?
+              JSON.stringify(result, null, 2) :
+              JSON.stringify(result)
+          )
+        }
+
         try {
           const result = await this.onRequest(req, res) as any
         
@@ -66,8 +86,6 @@ class Path implements IRoute {
               break
           }
         } catch(err) {
-          //console.log(err)
-
           const data = {
             code: 500,
             message: err.isAxiosError ?

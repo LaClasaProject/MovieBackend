@@ -9,18 +9,15 @@ class AddVideo extends Path implements IRoute {
   public path   = '/api/videos'
   public method = 'post'
 
+  public adminOnly = true
+
   public async onRequest(req: HttpReq) {
-    const data = req.body as unknown as INewVideoProps,
-      adminKey = req.headers.authorization
+    const data = req.body as unknown as INewVideoProps
 
-    if (!this.server.config.adminKeys.includes(adminKey))
-      return {
-        error: true,
-        message: 'You aren not authorized for this action.',
-        code: 401
-      }
-
-    return await this.server.utils.addVideo(data)
+    return {
+      data: await this.server.utils.addVideo(data),
+      code: 200
+    }
   }
 }
 

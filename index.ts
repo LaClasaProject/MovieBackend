@@ -9,6 +9,12 @@ import GetVideoById from './src/routes/video/GetVideoById'
 import AddVideo from './src/routes/video/AddVideo'
 
 import GetVideos from './src/routes/video/GetVideos'
+import UpdateVideo from './src/routes/video/UpdateVideo'
+
+import DeleteVideo from './src/routes/video/DeleteVideo'
+import GetTop5Videos from './src/routes/video/GetTop5Videos'
+
+import GetPinnedVideos from './src/routes/video/GetPinnedVideos'
 
 const main = async () => {
   const http = new HttpServer(config)
@@ -27,6 +33,12 @@ const main = async () => {
   await http.register(AddVideo)
 
   await http.register(GetVideos)
+  await http.register(UpdateVideo)
+
+  await http.register(DeleteVideo)
+  await http.register(GetTop5Videos)
+
+  await http.register(GetPinnedVideos)
 
   try {
     await http.ready()

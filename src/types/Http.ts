@@ -4,8 +4,12 @@ import { RequestExtensions, ResponseExtensions } from 'restana'
 import {
   ILockData,
   ISeriesData,
+
   ITrailerData,
-  IVideoMeta
+  IVideoImageData,
+  
+  IVideoMeta,
+  IVideoMiscData
 } from './Database'
 
 type HttpReq = IncomingMessage & RequestExtensions
@@ -27,6 +31,9 @@ interface INewVideoProps {
 
   lock?: ILockData
   runtime?: number
+
+  images?: IVideoImageData
+  misc?: IVideoMiscData
 }
 
 export {

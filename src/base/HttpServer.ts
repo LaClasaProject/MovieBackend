@@ -7,6 +7,8 @@ import Utils from '../Utils'
 import Models from '../Schemas'
 import { connect } from 'mongoose'
 
+import { IVideoData } from '../types/Database'
+
 class HttpServer {
   public restana = restana()
   public routes: Map<string, Path> = new Map()
@@ -15,6 +17,13 @@ class HttpServer {
   public utils = new Utils(this)
 
   public models = Models
+  public top5Cache: {
+    expir?: number
+    data: IVideoData[]
+  } = {
+    expir: null,
+    data: []
+  }
 
   constructor(public config: IConfig) {}
 

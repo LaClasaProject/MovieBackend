@@ -4,8 +4,8 @@ Backend service for the "Movie" project.
 ## TODO List
 - [x] Move database to MongoDB.
 - [ ] V2 Update.
-  - [ ] Get "Top 5" daily videos.
-  - [ ] Get "Pinned" videos.
+  - [x] Get "Top 5" daily videos.
+  - [x] Get "Pinned" videos.
 
-- [ ] User Login/Signup system.
-  - [ ] Playlists.
+  - [ ] User Login/Signup system.
+    - [ ] Playlists.

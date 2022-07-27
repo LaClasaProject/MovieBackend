@@ -7,7 +7,13 @@ import {
   ITrailerData,
 
   ILockData,
-  IVideoData
+  IVideoData,
+
+  IVideoImageData,
+  IVideoMiscData,
+
+  IPlaylist,
+  IUser
 } from './types/Database'
 
 const EpisodeSchema = new Schema<IEpisodeData>(
@@ -64,9 +70,36 @@ const EpisodeSchema = new Schema<IEpisodeData>(
       versionKey: false
     }
   ),
+  VideoImageSchema = new Schema<IVideoImageData>(
+    {
+      poster: Schema.Types.String,
+      cover: Schema.Types.String
+    },
+    {
+      _id: false,
+      versionKey: false
+    }
+  ),
+  MiscSchema = new Schema<IVideoMiscData>(
+    {
+      video: Schema.Types.String,
+      subs: Schema.Types.String,
+
+      pinned: Schema.Types.Boolean,
+      isTop5: Schema.Types.Boolean
+    },
+    {
+      _id: false,
+      versionKey: false
+    }
+  ),
   VideoSchema = new Schema<IVideoData>(
     {
-      addedAt: { type: Schema.Types.Number, required: true },
+      addedAt: {
+        type: Schema.Types.Number,
+        required: true,
+        immutable: true
+      },
       available: Schema.Types.Boolean,
 
       series: SeriesSchema,
@@ -75,13 +108,39 @@ const EpisodeSchema = new Schema<IEpisodeData>(
       trailer: TrailerSchema,
       lock: LockSchema,
 
-      runtime: Schema.Types.Number
+      runtime: Schema.Types.Number,
+      images: VideoImageSchema,
+
+      misc: MiscSchema
+    },
+    { versionKey: false }
+  )
+
+const PlaylistSchema = new Schema<IPlaylist>(
+  {
+    videoId: { type: Schema.Types.String, required: true },
+    pinned: Schema.Types.Boolean,
+
+    public: Schema.Types.Boolean
+  },
+  {
+    _id: false,
+    versionKey: false
+  }
+),
+  UserSchema = new Schema<IUser>(
+    {
+      password: { type: Schema.Types.String, required: true },
+      email: { type: Schema.Types.String, required: true },
+
+      playlists: [PlaylistSchema]
     },
     { versionKey: false }
   )
 
 const models = {
-  Videos: model('Videos', VideoSchema)
+  Videos: model('Videos', VideoSchema),
+  Users: model('Users', UserSchema)
 }
 
 export default models

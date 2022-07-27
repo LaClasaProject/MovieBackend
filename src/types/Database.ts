@@ -25,6 +25,19 @@ interface ILockData {
   hide?: boolean
 }
 
+interface IVideoImageData {
+  poster?: string
+  cover?: string
+}
+
+interface IVideoMiscData {
+  video?: string
+  subs?: string
+
+  pinned?: boolean
+  isTop5?: boolean
+}
+
 interface IVideoData {
   addedAt?: number
   available?: boolean
@@ -36,10 +49,23 @@ interface IVideoData {
   lock?: ILockData
   
   runtime?: number
+  images?: IVideoImageData
+
+  misc?: IVideoMiscData
+}
+
+interface IPlaylist {
+  videoId: string
+  pinned?: boolean
+
+  public?: boolean
 }
 
 interface IUser {
-
+  password: string
+  email: string
+  
+  playlists: IPlaylist[]
 }
 
 export {
@@ -50,5 +76,11 @@ export {
   ITrailerData,
 
   ILockData,
-  IVideoData
+  IVideoData,
+
+  IVideoImageData,
+  IVideoMiscData,
+
+  IUser,
+  IPlaylist
 }
