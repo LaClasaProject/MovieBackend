@@ -5,10 +5,10 @@ import {
 } from '../../types/Http'
 
 class GetVideoById extends Path implements IRoute {
-  public path   = '/api/v2/videos'
+  public path   = '/api/videos'
   public method = 'get'
 
-  public async onRequest(req: HttpReq) {
+  public async onRequest() {
     const videos = await this.server.utils.getVideos()
 
     return {

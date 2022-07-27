@@ -5,10 +5,10 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 
 // v2 paths
-import GetVideoByIdV2 from './src/routes/video/GetVideoById'
-import AddVideoV2 from './src/routes/video/AddVideo'
+import GetVideoById from './src/routes/video/GetVideoById'
+import AddVideo from './src/routes/video/AddVideo'
 
-import GetVideosV2 from './src/routes/video/GetVideos'
+import GetVideos from './src/routes/video/GetVideos'
 
 const main = async () => {
   const http = new HttpServer(config)
@@ -23,10 +23,10 @@ const main = async () => {
   )
 
   // v2 paths
-  await http.register(GetVideoByIdV2)
-  await http.register(AddVideoV2)
+  await http.register(GetVideoById)
+  await http.register(AddVideo)
 
-  await http.register(GetVideosV2)
+  await http.register(GetVideos)
 
   try {
     await http.ready()

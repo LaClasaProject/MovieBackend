@@ -6,9 +6,7 @@ class Utils {
   constructor(public server: HttpServer) {}
 
   public async getVideoById(_id: string) {
-    return await this.server.models.Videos.findOne(
-      { _id }
-    )
+    return await this.server.models.Videos.findById(_id)
   }
 
   public async getVideos() {
@@ -17,7 +15,15 @@ class Utils {
 
   // TODO: Add function
   public async addVideo(data: INewVideoProps) {
-    return null
+    const video = new this.server.models.Videos(
+      {
+        ...data,
+        addedAt: Date.now()
+      }
+    )
+
+    await video.save()
+    return video
   }
 }
 

@@ -5,7 +5,7 @@ import {
 } from '../../types/Http'
 
 class GetVideoById extends Path implements IRoute {
-  public path   = '/api/v2/video/:id'
+  public path   = '/api/video/:id'
   public method = 'get'
 
   public async onRequest(req: HttpReq) {
