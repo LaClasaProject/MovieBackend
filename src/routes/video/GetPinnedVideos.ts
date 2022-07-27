@@ -4,8 +4,9 @@ import {
   IRoute
 } from '../../types/Http'
 
+// TODO: Remove this, replace with GetVideos new features (soon).
 class GetPinnedVideos extends Path implements IRoute {
-  public path   = '/api/videos/top5'
+  public path   = '/api/videos/pinned'
   public method = 'get'
 
   public async onRequest() {

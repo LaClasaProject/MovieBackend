@@ -15,6 +15,7 @@ import DeleteVideo from './src/routes/video/DeleteVideo'
 import GetTop5Videos from './src/routes/video/GetTop5Videos'
 
 import GetPinnedVideos from './src/routes/video/GetPinnedVideos'
+import ReplaceVideo from './src/routes/video/ReplaceVideo'
 
 const main = async () => {
   const http = new HttpServer(config)
@@ -39,6 +40,7 @@ const main = async () => {
   await http.register(GetTop5Videos)
 
   await http.register(GetPinnedVideos)
+  await http.register(ReplaceVideo)
 
   try {
     await http.ready()

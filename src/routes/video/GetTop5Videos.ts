@@ -4,6 +4,7 @@ import {
   IRoute
 } from '../../types/Http'
 
+// TODO: Remove this, replace with GetVideos new features (soon).
 class GetTop5Videos extends Path implements IRoute {
   public path   = '/api/videos/top5'
   public method = 'get'

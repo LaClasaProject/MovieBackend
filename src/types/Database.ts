@@ -26,7 +26,9 @@ interface ILockData {
 }
 
 interface IVideoImageData {
-  poster?: string
+  poster: string
+  thumbnail: string
+
   cover?: string
 }
 

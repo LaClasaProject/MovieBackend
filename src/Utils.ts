@@ -1,8 +1,6 @@
 import HttpServer from './base/HttpServer'
 import { INewVideoProps } from './types/Http'
 
-import { randomUUID } from 'crypto'
-
 // V2 Utils
 class Utils {
   constructor(public server: HttpServer) {}
@@ -11,8 +9,17 @@ class Utils {
     return await this.server.models.Videos.findById(_id)
   }
 
-  public async getVideos() {
-    return await this.server.models.Videos.find({})
+  public async getVideos(
+    options?: {
+      skip: number,
+      limit: number
+    }
+  ) {
+    return await this.server.models.Videos.find(
+      {},
+      undefined,
+      options
+    )
   }
 
   public async addVideo(data: INewVideoProps) {
@@ -30,6 +37,14 @@ class Utils {
   public async updateVideo(_id: string, data: INewVideoProps) {    
     return await this.server.models.Videos.findByIdAndUpdate(
       _id,
+      data,
+      { new: true }
+    )
+  }
+  
+  public async replaceVideo(_id: string, data: INewVideoProps) {    
+    return await this.server.models.Videos.findOneAndReplace(
+      { _id },
       data,
       { new: true }
     )

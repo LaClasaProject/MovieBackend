@@ -73,7 +73,9 @@ const EpisodeSchema = new Schema<IEpisodeData>(
   VideoImageSchema = new Schema<IVideoImageData>(
     {
       poster: Schema.Types.String,
-      cover: Schema.Types.String
+      cover: Schema.Types.String,
+
+      thumbnail: { type: Schema.Types.String, required: true }
     },
     {
       _id: false,
