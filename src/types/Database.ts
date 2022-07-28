@@ -37,7 +37,7 @@ interface IVideoMiscData {
   subs?: string
 
   pinned?: boolean
-  isTop5?: boolean
+  upcoming?: boolean
 }
 
 interface IVideoData {

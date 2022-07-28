@@ -88,7 +88,7 @@ const EpisodeSchema = new Schema<IEpisodeData>(
       subs: Schema.Types.String,
 
       pinned: Schema.Types.Boolean,
-      isTop5: Schema.Types.Boolean
+      upcoming: Schema.Types.Boolean
     },
     {
       _id: false,

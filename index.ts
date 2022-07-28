@@ -12,9 +12,6 @@ import GetVideos from './src/routes/video/GetVideos'
 import UpdateVideo from './src/routes/video/UpdateVideo'
 
 import DeleteVideo from './src/routes/video/DeleteVideo'
-import GetTop5Videos from './src/routes/video/GetTop5Videos'
-
-import GetPinnedVideos from './src/routes/video/GetPinnedVideos'
 import ReplaceVideo from './src/routes/video/ReplaceVideo'
 
 const main = async () => {
@@ -37,9 +34,6 @@ const main = async () => {
   await http.register(UpdateVideo)
 
   await http.register(DeleteVideo)
-  await http.register(GetTop5Videos)
-
-  await http.register(GetPinnedVideos)
   await http.register(ReplaceVideo)
 
   try {

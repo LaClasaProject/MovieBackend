@@ -13,12 +13,16 @@ class GetVideoById extends Path implements IRoute {
   public async onRequest(req: HttpReq) {
     const {
       skip,
-      limit
+      limit,
+      pinned,
+      upcoming
     } = req.query,
       videos = await this.server.utils.getVideos(
         {
           skip: Number(skip),
-          limit: Number(limit)
+          limit: Number(limit),
+          pinned: pinned === 'true' ? true : undefined,
+          upcoming: upcoming === 'true' ? true : undefined
         }
       )
 
