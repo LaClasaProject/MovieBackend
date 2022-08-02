@@ -2,10 +2,13 @@ import {
   HttpReq,
   IRoute,
   HttpRes,
-  PathReturnable
+  PathReturnable,
+  IPathReturnObject
 } from '../types/Http'
-
 import HttpServer from './HttpServer'
+
+import zlib from 'zlib'
+import { promisify } from 'util'
 
 class Path implements IRoute {
   public path   = '/'
@@ -13,6 +16,54 @@ class Path implements IRoute {
 
   public adminOnly = false
   public server: HttpServer
+
+  public deflate = promisify(zlib.deflate)
+  public inflate = promisify(zlib.inflate)
+
+  public cache = false
+
+  private clean(data: IPathReturnObject) {
+    return this.server.config.http.cleanedJsonResponses ?
+      JSON.stringify(data, null, 2) :
+      JSON.stringify(data)
+  }
+
+  private async addToCache(url: string, data: IPathReturnObject) {
+    if (!this.cache) return
+
+    await this.server.log(url, 'not in cache. Now added.')
+    this.server.cache.data.set(
+      url,
+      {
+        expiry: Date.now() + (
+          (this.server.cache.ttl * 1000) *
+          60
+        ),
+        data: await this.deflate(
+          JSON.stringify(data),
+          { level: zlib.constants.Z_BEST_COMPRESSION }
+        )
+      }
+    )
+  }
+
+  private async getFromCache(url: string): Promise<IPathReturnObject | undefined> {
+    if (!this.cache) return
+
+    const cached = this.server.cache.data.get(url)
+    if (Date.now() >= cached?.expiry || 0) return
+
+    return cached ? (
+      JSON.parse(
+        (
+          await this.inflate(
+            cached.data,
+            { level: zlib.constants.Z_BEST_COMPRESSION }
+          )
+        ).toString()
+      )
+    ) : undefined
+  }
 
   public register(server: HttpServer, log: boolean = false) {
     this.server = server
@@ -33,28 +84,45 @@ class Path implements IRoute {
           res.statusCode = result.code
 
           return res.send(
-            this.server.config.http.cleanedJsonResponses ?
-              JSON.stringify(result, null, 2) :
-              JSON.stringify(result)
+            this.clean(result)
           )
         }
 
         try {
-          const result = await this.onRequest(req, res) as any
+          const path = req.url,
+            url = path.endsWith('/') && path.length > 1 ?
+              path.slice(0, -1) :
+              path,
+              cacheData = await this.getFromCache(url)
+
+          if (this.cache) {
+            if (cacheData) { // data is in cache
+              await this.server.log('Found', url, 'in cache.')
+              if (typeof cacheData.code === 'number')
+                res.statusCode = cacheData.code
+  
+              return res.send(
+                this.clean(cacheData)
+              )
+            } else this.server.cache.data.delete(url)
+          }
+            
+          const result = await this.onRequest(req, res)
         
           switch (typeof result) {
             case 'object':
-              if (result === null) {
+              if (result === null || Array.isArray(result)) {
                 const data = {
                   code: 400,
-                  message: 'no message was provided'
+                  message: 'no message was provided',
+                  result
                 }
       
                 res.statusCode = 400
+                await this.addToCache(url, data) // cache
+
                 return res.send(
-                  this.server.config.http.cleanedJsonResponses ?
-                    JSON.stringify(data, null, 2) :
-                    JSON.stringify(data)
+                  this.clean(data)
                 )
               }
 
@@ -64,10 +132,9 @@ class Path implements IRoute {
               if (typeof result.code === 'number')
                 res.statusCode = result.code
 
+              await this.addToCache(url, result)
               res.send(
-                this.server.config.http.cleanedJsonResponses ?
-                  JSON.stringify(result, null, 2) :
-                  JSON.stringify(result)
+                this.clean(result)
               )
               break
 
@@ -95,9 +162,7 @@ class Path implements IRoute {
 
           res.statusCode = 500
           res.send(
-            this.server.config.http.cleanedJsonResponses ?
-              JSON.stringify(data, null, 2) :
-              JSON.stringify(data)
+            this.clean(data)
           )
         }
       }

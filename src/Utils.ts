@@ -28,8 +28,8 @@ class Utils {
       filter['misc.pinned'] = true
     else if (options.upcoming)
       filter['misc.upcoming'] = true
-
-    return await this.server.models.Videos.find(
+      
+    const videos = await this.server.models.Videos.find(
       filter,
       undefined,
       {
@@ -37,6 +37,8 @@ class Utils {
         limit: options.limit
       }
     )
+
+    return videos
   }
 
   public async addVideo(data: INewVideoProps) {

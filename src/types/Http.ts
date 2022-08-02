@@ -15,7 +15,17 @@ import {
 type HttpReq = IncomingMessage & RequestExtensions
 type HttpRes = ServerResponse & ResponseExtensions
 
-type PathReturnable = number | string | object | any[]
+interface IPathReturnObject {
+  error?: boolean
+  code?: number
+
+  message?: string
+  data?: any
+
+  willPipe?: boolean
+}
+
+type PathReturnable = number | string | IPathReturnObject | any[]
 
 interface IRoute {
   path: string
@@ -43,5 +53,6 @@ export {
   PathReturnable,
   IRoute,
 
-  INewVideoProps
+  INewVideoProps,
+  IPathReturnObject
 }

@@ -38,7 +38,7 @@ const main = async () => {
 
   try {
     await http.ready()
-    console.log('Backend ready')
+    await http.log('Backend ready')
   } catch(err) {
     console.error(err)
   }

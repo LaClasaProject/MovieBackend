@@ -6,7 +6,7 @@ import {
 } from '../../types/Http'
 
 class ReplaceVideo extends Path implements IRoute {
-  public path   = '/api/video/replace/:id'
+  public path   = '/api/video/:id'
   public method = 'post'
 
   public adminOnly = true

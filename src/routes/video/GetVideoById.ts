@@ -7,6 +7,8 @@ import {
 class GetVideoById extends Path implements IRoute {
   public path   = '/api/video/:id'
   public method = 'get'
+  
+  public cache = true
 
   public async onRequest(req: HttpReq) {
     const id = req.params.id,

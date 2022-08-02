@@ -7,7 +7,7 @@ import Utils from '../Utils'
 import Models from '../Schemas'
 import { connect } from 'mongoose'
 
-import { IVideoData } from '../types/Database'
+import moment from 'moment'
 
 class HttpServer {
   public restana = restana()
@@ -17,15 +17,31 @@ class HttpServer {
   public utils = new Utils(this)
 
   public models = Models
-  public top5Cache: {
-    expir?: number
-    data: IVideoData[]
-  } = {
-    expir: null,
-    data: []
+  public cache = {
+    ttl: 5, // in minutes
+    data: new Map<
+      string,
+      {
+        expiry: number,
+        data: Buffer
+      } | undefined
+    >() // cache url reponses instead
   }
 
   constructor(public config: IConfig) {}
+
+  public async log(...content: string[]) {
+    return new Promise(
+      (resolve) => resolve(
+        console.log(
+          moment()
+            .format('LLL'),
+          '|',
+          ...content
+        )
+      )
+    )
+  }
 
   public async ready() {
     await connect(

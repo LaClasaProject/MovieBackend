@@ -4,11 +4,11 @@ import {
   IRoute
 } from '../../types/Http'
 
-// TODO: Fix GetVideoById.
-// Make it flexible, allow pagination, filter by pinned videos or upcoming videos.
 class GetVideoById extends Path implements IRoute {
   public path   = '/api/videos'
   public method = 'get'
+
+  public cache = true
 
   public async onRequest(req: HttpReq) {
     const {
