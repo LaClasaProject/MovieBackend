@@ -14,7 +14,8 @@ class Utils {
       skip: number,
       limit: number,
       pinned?: boolean,
-      upcoming?: boolean
+      upcoming?: boolean,
+      isNew?: boolean
     }
   ) {
     const filter: { [key: string]: any } = {}
@@ -28,15 +29,19 @@ class Utils {
       filter['misc.pinned'] = true
     else if (options.upcoming)
       filter['misc.upcoming'] = true
+
+    if (options.isNew) // explicity set limit
+      options.limit = 5
       
     const videos = await this.server.models.Videos.find(
-      filter,
-      undefined,
-      {
-        skip: options.skip,
-        limit: options.limit
-      }
-    )
+        filter,
+        undefined
+      )
+      .skip(options.skip)
+      .limit(options.limit)
+      .sort(
+        { addedAt: options.isNew ? -1 : 1 }
+      )
 
     return videos
   }
