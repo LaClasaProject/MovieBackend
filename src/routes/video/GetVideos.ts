@@ -23,8 +23,7 @@ class GetVideoById extends Path implements IRoute {
           skip: Number(skip || 0),
           limit: Number(limit || 0),
           pinned: pinned === 'true' ? true : undefined,
-          upcoming: upcoming === 'true' ? true : undefined,
-          isNew: isNew === 'true' ? true : undefined
+          upcoming: upcoming === 'true' ? true : undefined
         }
       )
 
