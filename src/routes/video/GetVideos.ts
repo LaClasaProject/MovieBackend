@@ -16,7 +16,7 @@ class GetVideoById extends Path implements IRoute {
       limit,
       pinned,
       upcoming,
-      new: isNew
+      recently_added: recentlyAdded
     } = req.query,
       videos = await this.server.utils.getVideos(
         {
