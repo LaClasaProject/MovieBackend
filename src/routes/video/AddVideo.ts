@@ -15,7 +15,7 @@ class AddVideo extends Path implements IRoute {
     const data = req.body as unknown as INewVideoProps
 
     return {
-      data: await this.server.utils.addVideo(data),
+      value: await this.server.utils.addVideo(data),
       code: 200
     }
   }

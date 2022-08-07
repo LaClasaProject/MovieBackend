@@ -20,17 +20,17 @@ class Utils {
   ) {
     const filter: { [key: string]: any } = {}
     
-    if (options.pinned && options.upcoming)
+    if (options?.pinned && options?.upcoming)
       filter.$or = [
         { 'misc.pinned': true },
         { 'misc.upcoming': true }
       ]
-    else if (options.pinned)
+    else if (options?.pinned)
       filter['misc.pinned'] = true
-    else if (options.upcoming)
+    else if (options?.upcoming)
       filter['misc.upcoming'] = true
 
-    if (options.recentlyAdded) { // set filters explicitly
+    if (options?.recentlyAdded) { // set filters explicitly
       filter.available = true
       options.limit = 5
 
@@ -41,8 +41,8 @@ class Utils {
         filter,
         undefined
       )
-      .skip(options.skip)
-      .limit(options.limit)
+      .skip(options?.skip)
+      .limit(options?.limit)
       .sort(
         { addedAt: -1 }
       )
@@ -80,6 +80,31 @@ class Utils {
 
   public async deleteVideo(_id: string) {
     return await this.server.models.Videos.findByIdAndDelete(_id)
+  }
+
+  public async getContent() {
+    const otherVideos = await this.getVideos(
+      {
+        pinned: true,
+        upcoming: true,
+        skip: 0,
+        limit: 0
+      }
+    ),
+      mainVideos = await this.getVideos()
+
+    return {
+      otherVideos,
+      mainVideos
+    }
+  }
+
+  public async searchByTitle(title: string = '') {
+    return await this.server.models.Videos.find(
+      {
+        'meta.title': new RegExp(title, 'gi')
+      }
+    )
   }
 }
 

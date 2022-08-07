@@ -16,7 +16,7 @@ class GetVideoById extends Path implements IRoute {
 
     return data ? (
       {
-        data,
+        value: data,
         code: 200
       }
     ) : (

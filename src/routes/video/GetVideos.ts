@@ -29,7 +29,7 @@ class GetVideoById extends Path implements IRoute {
       )
 
     return {
-      data: videos,
+      value: videos,
       code: 200
     }
   }

@@ -14,6 +14,9 @@ import UpdateVideo from './src/routes/video/UpdateVideo'
 import DeleteVideo from './src/routes/video/DeleteVideo'
 import ReplaceVideo from './src/routes/video/ReplaceVideo'
 
+import GetContent from './src/routes/video/GetContent'
+import SearchVideo from './src/routes/video/SearchVideo'
+
 const main = async () => {
   const http = new HttpServer(config)
 
@@ -35,6 +38,9 @@ const main = async () => {
 
   await http.register(DeleteVideo)
   await http.register(ReplaceVideo)
+
+  await http.register(GetContent)
+  await http.register(SearchVideo)
 
   try {
     await http.ready()

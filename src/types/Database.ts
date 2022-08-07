@@ -54,6 +54,7 @@ interface IVideoData {
   images?: IVideoImageData
 
   misc?: IVideoMiscData
+  badges: string[]
 }
 
 interface IPlaylist {

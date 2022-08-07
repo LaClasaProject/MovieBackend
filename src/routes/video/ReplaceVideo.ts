@@ -18,7 +18,7 @@ class ReplaceVideo extends Path implements IRoute {
 
     return res ? (
       {
-        data: res,
+        value: res,
         code: 200
       }
     ) : (

@@ -113,7 +113,8 @@ const EpisodeSchema = new Schema<IEpisodeData>(
       runtime: Schema.Types.Number,
       images: VideoImageSchema,
 
-      misc: MiscSchema
+      misc: MiscSchema,
+      badges: { type: [Schema.Types.String], required: true }
     },
     { versionKey: false }
   )
