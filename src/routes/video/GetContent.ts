@@ -11,7 +11,7 @@ class GetContent extends Path implements IRoute {
 
   public cache = true
 
-  public async onRequest(req: HttpReq) {
+  public async onRequest() {
     return {
       value: await this.server.utils.getContent(),
       code: 200

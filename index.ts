@@ -17,6 +17,13 @@ import ReplaceVideo from './src/routes/video/ReplaceVideo'
 import GetContent from './src/routes/video/GetContent'
 import SearchVideo from './src/routes/video/SearchVideo'
 
+// user-related routes
+import CreateUser from './src/routes/user/CreateUser'
+import LoginUser from './src/routes/user/LoginUser'
+
+import VerifyToken from './src/routes/user/VerifyToken'
+import GetLibrary from './src/routes/user/GetLibrary'
+
 const main = async () => {
   const http = new HttpServer(config)
 
@@ -41,6 +48,12 @@ const main = async () => {
 
   await http.register(GetContent)
   await http.register(SearchVideo)
+
+  await http.register(CreateUser)
+  await http.register(LoginUser)
+
+  await http.register(VerifyToken)
+  await http.register(GetLibrary)
 
   try {
     await http.ready()

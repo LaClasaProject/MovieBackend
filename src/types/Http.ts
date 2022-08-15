@@ -20,9 +20,10 @@ interface IPathReturnObject {
   code?: number
 
   message?: string
-  data?: any
+  value?: any
 
   willPipe?: boolean
+  userTokenInvalid?: boolean
 }
 
 type PathReturnable = number | string | IPathReturnObject | any[]
@@ -46,6 +47,11 @@ interface INewVideoProps {
   misc?: IVideoMiscData
 }
 
+interface IEncryptedToken {
+  iv: string
+  token: string
+}
+
 export {
   HttpReq,
   HttpRes,
@@ -54,5 +60,7 @@ export {
   IRoute,
 
   INewVideoProps,
-  IPathReturnObject
+  IPathReturnObject,
+
+  IEncryptedToken
 }

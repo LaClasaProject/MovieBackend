@@ -4,11 +4,12 @@ import {
   IRoute
 } from '../../types/Http'
 
-class GetVideoById extends Path implements IRoute {
+class GetVideos extends Path implements IRoute {
   public path   = '/api/videos'
   public method = 'get'
 
   public cache = true
+  public requireUserToken = true
 
   public async onRequest(req: HttpReq) {
     const {
@@ -35,4 +36,4 @@ class GetVideoById extends Path implements IRoute {
   }
 }
 
-export default GetVideoById
+export default GetVideos

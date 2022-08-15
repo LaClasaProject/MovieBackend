@@ -10,6 +10,9 @@ import HttpServer from './HttpServer'
 import zlib from 'zlib'
 import { promisify } from 'util'
 
+import axios from 'axios'
+import { URLSearchParams } from 'url'
+
 class Path implements IRoute {
   public path   = '/'
   public method = 'get'
@@ -21,6 +24,10 @@ class Path implements IRoute {
   public inflate = promisify(zlib.inflate)
 
   public cache = false
+  public captcha = false
+
+  public requireUserToken = false
+  public token: string = null
 
   private clean(data: IPathReturnObject) {
     return this.server.config.http.cleanedJsonResponses ?
@@ -86,6 +93,57 @@ class Path implements IRoute {
           return res.send(
             this.clean(result)
           )
+        }
+
+        if (this.requireUserToken) {
+          const token = req.headers.authorization as string ?? '',
+            decoded = await this.server.utils.decryptJWT<any>(token)
+
+          if (!decoded) { // token failed
+            const result = {
+              error: true,
+              message: 'User token provided is either invalid or expired.',
+              code: 400,
+              userTokenInvalid: true
+            }
+            res.statusCode = result.code
+
+            return res.send(
+              this.clean(result)
+            )
+          } else this.token = token
+        }
+
+        if (this.captcha) {
+          const { captchaResponse } = req.body as unknown as { captchaResponse: string },
+            reqURL = 'https://hcaptcha.com/siteverify',
+            axiosRes = await axios.post(
+              reqURL,
+              new URLSearchParams(
+                {
+                  secret: this.server.config.captcha.secret,
+                  response: captchaResponse,
+                  sitekey: this.server.config.captcha.sitekey
+                }
+              ),
+              {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+              }
+            )
+
+          delete req.body['captchaResponse']
+          if (!axiosRes.data.success) {
+            const result = {
+              error: true,
+              message: `Captcha failed. Errors: "${(axiosRes.data['error-codes'] ?? []).join('", "')}"`,
+              code: 400
+            }
+            res.statusCode = result.code
+
+            return res.send(
+              this.clean(result)
+            )
+          }
         }
 
         try {

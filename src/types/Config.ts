@@ -14,15 +14,26 @@ interface IHttpConfig {
   cleanedJsonResponses: boolean
 }
 
+interface ICaptchaConfig {
+  sitekey: string
+  secret: string
+}
+
 interface IConfig {
   http: IHttpConfig
   db: IDatabaseConfig
 
   adminKeys: string[]
+  captcha: ICaptchaConfig
+
+  cypher_iv_key: string
+  jwt_secret: string
 }
 
 export {
   IDatabaseConfig,
   IHttpConfig,
+
+  ICaptchaConfig,
   IConfig
 }

@@ -55,20 +55,27 @@ interface IVideoData {
 
   misc?: IVideoMiscData
   badges: string[]
+
+  requests: number
 }
 
-interface IPlaylist {
+interface ILibraryContent {
   videoId: string
-  pinned?: boolean
-
   public?: boolean
 }
 
+enum IUserTiers {
+  FREE,
+  PREM_1,
+  PREM_2
+}
+
 interface IUser {
-  password: string
   email: string
+  password: string
   
-  playlists: IPlaylist[]
+  library: ILibraryContent[]
+  tier: IUserTiers
 }
 
 export {
@@ -85,5 +92,7 @@ export {
   IVideoMiscData,
 
   IUser,
-  IPlaylist
+  ILibraryContent,
+
+  IUserTiers
 }

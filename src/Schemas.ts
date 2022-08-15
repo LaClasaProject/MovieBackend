@@ -12,8 +12,9 @@ import {
   IVideoImageData,
   IVideoMiscData,
 
-  IPlaylist,
-  IUser
+  ILibraryContent,
+  IUser,
+  IUserTiers
 } from './types/Database'
 
 const EpisodeSchema = new Schema<IEpisodeData>(
@@ -114,16 +115,16 @@ const EpisodeSchema = new Schema<IEpisodeData>(
       images: VideoImageSchema,
 
       misc: MiscSchema,
-      badges: { type: [Schema.Types.String], required: true }
+      badges: { type: [Schema.Types.String], required: true },
+
+      requests: { type: Schema.Types.Number, default: 0 }
     },
     { versionKey: false }
   )
 
-const PlaylistSchema = new Schema<IPlaylist>(
+const LibraryContentSchema = new Schema<ILibraryContent>(
   {
     videoId: { type: Schema.Types.String, required: true },
-    pinned: Schema.Types.Boolean,
-
     public: Schema.Types.Boolean
   },
   {
@@ -134,9 +135,10 @@ const PlaylistSchema = new Schema<IPlaylist>(
   UserSchema = new Schema<IUser>(
     {
       password: { type: Schema.Types.String, required: true },
-      email: { type: Schema.Types.String, required: true },
+      email: { type: Schema.Types.String, required: true, unique: true },
 
-      playlists: [PlaylistSchema]
+      library: [LibraryContentSchema],
+      tier: { type: Schema.Types.Number, default: IUserTiers.FREE }
     },
     { versionKey: false }
   )

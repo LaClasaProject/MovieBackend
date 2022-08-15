@@ -17,5 +17,13 @@
 
   "adminKeys": [
     "key1"
-  ]
+  ],
+
+  "captcha": {
+    "sitekey": "CAPTCHA_SITE_KEY",
+    "secret": "CAPTCHA_SECRET_KEY"
+  },
+
+  "cypher_iv_key": "cypher_iv_key",
+  "jwt_secret": "jwt_secret"
 }
