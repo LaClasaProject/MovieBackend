@@ -134,8 +134,28 @@ const LibraryContentSchema = new Schema<ILibraryContent>(
 ),
   UserSchema = new Schema<IUser>(
     {
+      username: {
+        type: Schema.Types.String,
+        required: true,
+        unique: true,
+        trim: true
+      },
+      username_l: {
+        type: Schema.Types.String,
+        unique: true,
+        required: true,
+        trim: true,
+        lowercase: true
+      },
+
       password: { type: Schema.Types.String, required: true },
-      email: { type: Schema.Types.String, required: true, unique: true },
+      email: {
+        type: Schema.Types.String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true
+      },
 
       library: [LibraryContentSchema],
       tier: { type: Schema.Types.Number, default: IUserTiers.FREE }

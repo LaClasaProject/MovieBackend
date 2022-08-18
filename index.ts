@@ -21,7 +21,6 @@ import SearchVideo from './src/routes/video/SearchVideo'
 import CreateUser from './src/routes/user/CreateUser'
 import LoginUser from './src/routes/user/LoginUser'
 
-import VerifyToken from './src/routes/user/VerifyToken'
 import GetLibrary from './src/routes/user/GetLibrary'
 
 const main = async () => {
@@ -52,7 +51,6 @@ const main = async () => {
   await http.register(CreateUser)
   await http.register(LoginUser)
 
-  await http.register(VerifyToken)
   await http.register(GetLibrary)
 
   try {

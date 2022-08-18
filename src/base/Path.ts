@@ -72,7 +72,7 @@ class Path implements IRoute {
     ) : undefined
   }
 
-  public register(server: HttpServer, log: boolean = false) {
+  public register(server: HttpServer) {
     this.server = server
 
     server.restana[this.method](
@@ -97,9 +97,9 @@ class Path implements IRoute {
 
         if (this.requireUserToken) {
           const token = req.headers.authorization as string ?? '',
-            decoded = await this.server.utils.decryptJWT<any>(token)
+            isValid = await this.server.utils.verifyToken(token)
 
-          if (!decoded) { // token failed
+          if (!isValid) { // token failed
             const result = {
               error: true,
               message: 'User token provided is either invalid or expired.',

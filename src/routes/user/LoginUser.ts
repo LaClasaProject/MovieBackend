@@ -11,11 +11,11 @@ class LoginUser extends Path implements IRoute {
   public path   = '/api/users/token'
   public method = 'post'
 
-  public captcha = false
+  public captcha = true
 
   public async onRequest(req: HttpReq) {
-    const data = req.body as unknown as IUser,
-      user = await this.server.utils.getUserByAuth(data.email, data.password)
+    const data = req.body as unknown as IUser,    
+      user = await this.server.utils.getUserByAuth(data)
 
     if (!user)
       return {
@@ -24,10 +24,7 @@ class LoginUser extends Path implements IRoute {
         code: 400
       }
     else return {
-      value: await this.server.utils.encryptJWT(
-        { _id: user.id },
-        60 * 60 * 24, // seconds
-      ),
+      value: await this.server.utils.createTokenFromUser(user),
       code: 200
     }
   }

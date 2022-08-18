@@ -67,15 +67,21 @@ interface ILibraryContent {
 enum IUserTiers {
   FREE,
   PREM_1,
-  PREM_2
+  PREM_2,
+  ADMIN
 }
 
 interface IUser {
+  username: string
+  username_l: string
+
   email: string
   password: string
   
   library: ILibraryContent[]
   tier: IUserTiers
+
+  _id?: string
 }
 
 export {

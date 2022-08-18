@@ -1,5 +1,5 @@
 import HttpServer from './base/HttpServer'
-import { IUser } from './types/Database'
+import { IUser, IUserTiers } from './types/Database'
 
 import { IEncryptedToken, INewVideoProps } from './types/Http'
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'crypto'
@@ -107,9 +107,7 @@ class Utils {
 
   public async searchByTitle(title: string = '') {
     return await this.server.models.Videos.find(
-      {
-        'meta.title': new RegExp(title, 'gi')
-      }
+      { 'meta.title': new RegExp(title, 'gi') }
     )
   }
 
@@ -127,20 +125,30 @@ class Utils {
     if (!Array.isArray(data.library) || data.library.length >= 1)
       data.library = []
   
-    if (data.email.length < 5 || data.password.length < 3)
-      throw new Error('Invalid email or password length.')
+    if (
+      !data.username ||
+      data.username.length < 3 ||
+      data.username.length > 16
+    )
+      throw new Error('Keep the username between 3 to 16 characters.')
 
-    data.email = data.email?.toLowerCase()
+    if (!data.email?.match(/.+@.+\..+/g))
+      throw new Error('Invalid email provided.')
+
+    if (
+      !data.password ||
+      data.password?.length < 3
+    )
+      throw new Error('Invalid password length.')
+
     data.password = await this.hash(data.password ?? '')
+    data.username_l = data.username
 
     const user = new this.server.models.Users(data)
     await user.save()
     
     if (returnToken)
-      return this.encryptJWT(
-        { _id: user.id },
-        60 * 60 * 24
-      )
+      return await this.createTokenFromUser(user)
     else return user
   }
 
@@ -212,15 +220,16 @@ class Utils {
     )
   }
 
-  public async getUserByAuth(email: string, password: string) {
-    email = email?.toLowerCase()
+  public async getUserByAuth(
+    data: {
+      username?: string
+      email?: string
 
-    return await this.server.models.Users.findOne(
-      {
-        email,
-        password: await this.hash(password ?? '')
-      }
-    )
+      password: string
+    }
+  ) {
+    data.password = await this.hash(data.password ?? '')
+    return await this.server.models.Users.findOne(data)
   }
 
   public async getUserLibrary(token: string) {
@@ -230,6 +239,29 @@ class Utils {
       )
 
     return user?.library ?? []
+  }
+
+  public async comparePermissions(user: IUser, tier: IUserTiers) {
+    return new Promise(
+      (resolve) => resolve(user.tier >= tier)
+    )
+  }
+
+  public async verifyToken(token: string) {
+    const data = await this.decryptJWT<{ _id: string, password: string }>(token),
+      user = await this.server.models.Users.findOne(data)
+
+    return !!user    
+  }
+
+  public async createTokenFromUser(user: IUser) {
+    return await this.encryptJWT(
+      {
+        _id: user._id,
+        password: user.password
+      },
+      60 * 60 * 24
+    )
   }
 }
 
