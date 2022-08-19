@@ -82,6 +82,7 @@ interface IUser {
   tier: IUserTiers
 
   _id?: string
+  state: number
 }
 
 export {

@@ -143,6 +143,7 @@ class Utils {
 
     data.password = await this.hash(data.password ?? '')
     data.username_l = data.username
+    data.state = Date.now()
 
     const user = new this.server.models.Users(data)
     await user.save()
@@ -248,7 +249,7 @@ class Utils {
   }
 
   public async verifyToken(token: string) {
-    const data = await this.decryptJWT<{ _id: string, password: string }>(token),
+    const data = await this.decryptJWT<{ _id: string, state: number }>(token), // use user.state to determine if token is valid or not
       user = await this.server.models.Users.findOne(data)
 
     return !!user    
@@ -258,7 +259,7 @@ class Utils {
     return await this.encryptJWT(
       {
         _id: user._id,
-        password: user.password
+        state: user.state
       },
       60 * 60 * 24
     )

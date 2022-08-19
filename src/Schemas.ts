@@ -158,7 +158,9 @@ const LibraryContentSchema = new Schema<ILibraryContent>(
       },
 
       library: [LibraryContentSchema],
-      tier: { type: Schema.Types.Number, default: IUserTiers.FREE }
+      tier: { type: Schema.Types.Number, default: IUserTiers.FREE },
+
+      state: { type: Schema.Types.Number, default: 0 }
     },
     { versionKey: false }
   )
