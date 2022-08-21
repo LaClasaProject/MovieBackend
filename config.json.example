@@ -1,7 +1,7 @@
 {
   "http": {
     "port": 8080,
-    "cleanedJsonResponses": true
+    "cleanedJsonResponses": false
   },
 
   "db": {
@@ -19,11 +19,34 @@
     "key1"
   ],
 
+  "plans": [
+    {
+      "price": 1.49,
+      "name": "Premium",
+      "tier": 1,
+      "features": []
+    },
+ 
+    {
+      "price": 1.99,
+      "name": "Premium+",
+      "tier": 2,
+      "features": []
+    }
+  ],
+
   "captcha": {
     "sitekey": "CAPTCHA_SITE_KEY",
     "secret": "CAPTCHA_SECRET_KEY"
   },
 
   "cypher_iv_key": "cypher_iv_key",
-  "jwt_secret": "jwt_secret"
+  "jwt_secret": "jwt_secret",
+  
+  "paypal": {
+    "base": "https://api-m.sandbox.paypal.com",
+    "currencyCode": "USD",
+    "clientID": "PAYPAL_CLIENT_ID",
+    "appSecret": "PAYPAL_SECRET_ID"
+  }
 }

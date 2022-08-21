@@ -2,19 +2,16 @@ import { Schema, model } from 'mongoose'
 import {
   ISeriesData,
   IEpisodeData,
-
   IVideoMeta,
   ITrailerData,
-
   ILockData,
   IVideoData,
-
   IVideoImageData,
   IVideoMiscData,
-
   ILibraryContent,
   IUser,
-  IUserTiers
+  IUserTiers,
+  IPaymentData
 } from './types/Database'
 
 const EpisodeSchema = new Schema<IEpisodeData>(
@@ -132,6 +129,21 @@ const LibraryContentSchema = new Schema<ILibraryContent>(
     versionKey: false
   }
 ),
+  PaymentSchema = new Schema<IPaymentData>(
+    {
+      name: Schema.Types.String,
+      id: Schema.Types.String,
+
+      email: Schema.Types.String,
+      tier: Schema.Types.Number,
+
+      purchasedAt: Schema.Types.Number
+    },
+    {
+      _id: false,
+      versionKey: false
+    }
+  ),
   UserSchema = new Schema<IUser>(
     {
       username: {
@@ -160,7 +172,8 @@ const LibraryContentSchema = new Schema<ILibraryContent>(
       library: [LibraryContentSchema],
       tier: { type: Schema.Types.Number, default: IUserTiers.FREE },
 
-      state: { type: Schema.Types.Number, default: 0 }
+      state: { type: Schema.Types.Number, default: 0 },
+      payments: [PaymentSchema]
     },
     { versionKey: false }
   )

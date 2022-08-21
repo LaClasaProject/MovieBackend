@@ -1,3 +1,5 @@
+import { IUserTiers } from './Database'
+
 interface IDatabaseConfig {
   host: string
   port: number | string
@@ -19,6 +21,22 @@ interface ICaptchaConfig {
   secret: string
 }
 
+interface IPlan {
+  price: number
+  name: string
+
+  tier: IUserTiers
+  features: string[]
+}
+
+interface IPaypalConfig {
+  base: string
+  currencyCode: string
+  
+  clientID: string
+  appSecret: string
+}
+
 interface IConfig {
   http: IHttpConfig
   db: IDatabaseConfig
@@ -28,6 +46,9 @@ interface IConfig {
 
   cypher_iv_key: string
   jwt_secret: string
+  
+  plans: IPlan[]
+  paypal: IPaypalConfig
 }
 
 export {

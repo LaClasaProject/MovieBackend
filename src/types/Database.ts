@@ -71,6 +71,16 @@ enum IUserTiers {
   ADMIN
 }
 
+interface IPaymentData {
+  name: string
+  id: string
+
+  email: string
+  tier: IUserTiers
+
+  purchasedAt: number
+}
+
 interface IUser {
   username: string
   username_l: string
@@ -83,6 +93,8 @@ interface IUser {
 
   _id?: string
   state: number
+
+  payments: IPaymentData[] // list of completed payments
 }
 
 export {
@@ -101,5 +113,6 @@ export {
   IUser,
   ILibraryContent,
 
-  IUserTiers
+  IUserTiers,
+  IPaymentData
 }

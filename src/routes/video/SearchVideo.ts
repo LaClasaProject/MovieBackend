@@ -8,6 +8,8 @@ class SearchVideo extends Path implements IRoute {
   public path   = '/api/videos/find/:title'
   public method = 'get'
 
+  public requireUserToken = true
+
   public async onRequest(req: HttpReq) {
     const { title } = req.params as unknown as { title: string }
 

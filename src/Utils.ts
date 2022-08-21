@@ -1,10 +1,11 @@
 import HttpServer from './base/HttpServer'
 import { IUser, IUserTiers } from './types/Database'
 
-import { IEncryptedToken, INewVideoProps } from './types/Http'
+import { IEncryptedToken, INewVideoProps, IPaypalAccessTokenResult, IPaypalOrder } from './types/Http'
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'crypto'
 
 import jsonwebtoken from 'jsonwebtoken'
+import axios from 'axios'
 
 // V2 Utils
 class Utils {
@@ -121,10 +122,7 @@ class Utils {
     )
   }
 
-  public async addUser(data: IUser, returnToken?: boolean) {
-    if (!Array.isArray(data.library) || data.library.length >= 1)
-      data.library = []
-  
+  public async addUser(data: IUser, returnToken?: boolean) {  
     if (
       !data.username ||
       data.username.length < 3 ||
@@ -141,9 +139,11 @@ class Utils {
     )
       throw new Error('Invalid password length.')
 
-    data.password = await this.hash(data.password ?? '')
+    data.password   = await this.hash(data.password ?? '')
     data.username_l = data.username
-    data.state = Date.now()
+    data.state      = Date.now()
+    data.library    = []
+    data.payments   = []
 
     const user = new this.server.models.Users(data)
     await user.save()
@@ -248,11 +248,18 @@ class Utils {
     )
   }
 
-  public async verifyToken(token: string) {
-    const data = await this.decryptJWT<{ _id: string, state: number }>(token), // use user.state to determine if token is valid or not
-      user = await this.server.models.Users.findOne(data)
+  public async getUserByToken(token: string) {
+    const data = await this.decryptJWT<{ _id: string, state: number }>(token) // use user.state to determine if token is valid or not
+    
+    return data ?
+      await this.server.models.Users.findOne(data) :
+      null
+  }
 
-    return !!user    
+  public async verifyToken(token: string) {
+    return !!(
+      await this.getUserByToken(token)
+    )
   }
 
   public async createTokenFromUser(user: IUser) {
@@ -263,6 +270,104 @@ class Utils {
       },
       60 * 60 * 24
     )
+  }
+
+  public async paypalAccessToken() {
+    const auth = Buffer.from(this.server.config.paypal.clientID + ':' + this.server.config.paypal.appSecret)
+        .toString('base64'),
+      url = '/v1/oauth2/token',
+      res = await axios.post(
+        this.server.config.paypal.base + url,
+        'grant_type=client_credentials',
+        {
+          headers: {
+            Authorization: `Basic ${auth}`
+          }
+        }
+      )
+    
+    return res.data as IPaypalAccessTokenResult
+  }
+
+  public async paypalCaptureOrder(orderID: string = '') {
+    const url = `/v2/checkout/orders/${orderID}/capture`,
+      data = await this.paypalAccessToken(),
+      res = await axios.post(
+        this.server.config.paypal.base + url,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${data.access_token}`
+          }
+        }
+      )
+
+    const order = this.server.orders.get(orderID)
+    if (order) { // add plan to user
+      const user = await this.server.models.Users.findById(order._id),
+        payments = [...user.payments]
+
+      payments.push(
+        {
+          id: res.data.id as string,
+          name: res.data.payer.name.given_name + ' ' + res.data.payer.name.surname,
+          
+          email: res.data.payer.email_address,
+          tier: order.tier,
+
+          purchasedAt: Date.now()
+        }
+      )
+
+      this.server.orders.delete(orderID) // remove from cache
+      await this.server.models.Users.findByIdAndUpdate(
+        user._id,
+        { payments }
+      )
+    }
+
+    return res.data
+  }
+
+  public async paypalCreateOrder(userToken: string, tier: IUserTiers) {
+    const url = '/v2/checkout/orders',
+      plan = this.server.config.plans.find((p) => p.tier === tier),
+      user = await this.decryptJWT<{ _id: string }>(userToken)
+
+    if (!plan) return false
+
+    const data = await this.paypalAccessToken(),
+      res = (
+        await axios.post(
+          this.server.config.paypal.base + url,
+          {
+            intent: 'CAPTURE',
+            purchase_units: [
+              {
+                amount: {
+                  currency_code: this.server.config.paypal.currencyCode,
+                  value: plan.price.toString()
+                }
+              }
+            ]
+          },
+          {
+            headers: { Authorization: `Bearer ${data.access_token}` }
+          }
+        )
+      ).data as IPaypalOrder
+    
+    // cache order
+    if (res.id)
+      this.server.orders.set(
+        res.id,
+        {
+          tier,
+          _id: user._id
+        }
+      )
+  
+    return res
   }
 }
 

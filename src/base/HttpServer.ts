@@ -8,6 +8,7 @@ import Models from '../Schemas'
 import { connect } from 'mongoose'
 
 import moment from 'moment'
+import { IUserTiers } from '../types/Database'
 
 class HttpServer {
   public restana = restana()
@@ -15,6 +16,14 @@ class HttpServer {
 
   public PROCESS_CWD = process.cwd()
   public utils = new Utils(this)
+
+  public orders: Map<
+    string,
+    {
+      tier: IUserTiers
+      _id: string
+    }
+  > = new Map()
 
   public models = Models
   public cache = {

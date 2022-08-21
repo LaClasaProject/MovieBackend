@@ -22,6 +22,9 @@ import CreateUser from './src/routes/user/CreateUser'
 import LoginUser from './src/routes/user/LoginUser'
 
 import GetLibrary from './src/routes/user/GetLibrary'
+import CreateOrder from './src/routes/orders/CreateOrder'
+
+import CaptureOrder from './src/routes/orders/CaptureOrder'
 
 const main = async () => {
   const http = new HttpServer(config)
@@ -52,6 +55,9 @@ const main = async () => {
   await http.register(LoginUser)
 
   await http.register(GetLibrary)
+  await http.register(CreateOrder)
+
+  await http.register(CaptureOrder)
 
   try {
     await http.ready()

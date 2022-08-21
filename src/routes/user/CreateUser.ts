@@ -10,7 +10,7 @@ class CreateUser extends Path implements IRoute {
   public path   = '/api/users'
   public method = 'post'
 
-  public captcha = true
+  public captcha = false
 
   public async onRequest(req: HttpReq) {
     const data = req.body as unknown as IUser,

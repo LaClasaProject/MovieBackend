@@ -52,6 +52,24 @@ interface IEncryptedToken {
   token: string
 }
 
+interface IPaypalAccessTokenResult {
+  scope: string
+  access_token: string
+
+  token_type: string
+  app_id: string
+
+  expires_in: string
+  nonce: string
+}
+
+interface IPaypalOrder {
+  id: string
+  status: string
+
+  links: string[]
+}
+
 export {
   HttpReq,
   HttpRes,
@@ -62,5 +80,8 @@ export {
   INewVideoProps,
   IPathReturnObject,
 
-  IEncryptedToken
+  IEncryptedToken,
+  IPaypalAccessTokenResult,
+
+  IPaypalOrder
 }

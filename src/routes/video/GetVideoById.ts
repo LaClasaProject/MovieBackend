@@ -9,6 +9,7 @@ class GetVideoById extends Path implements IRoute {
   public method = 'get'
   
   public cache = true
+  public requireUserToken = true
 
   public async onRequest(req: HttpReq) {
     const id = req.params.id,
