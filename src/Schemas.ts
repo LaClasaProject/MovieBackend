@@ -173,7 +173,9 @@ const LibraryContentSchema = new Schema<ILibraryContent>(
       tier: { type: Schema.Types.Number, default: IUserTiers.FREE },
 
       state: { type: Schema.Types.Number, default: 0 },
-      payments: [PaymentSchema]
+      payments: [PaymentSchema],
+
+      tierExpir: Schema.Types.Number
     },
     { versionKey: false }
   )

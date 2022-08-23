@@ -1,4 +1,6 @@
 import Path from '../../base/Path'
+import { IUserTiers } from '../../types/Database'
+
 import {
   HttpReq,
   IRoute
@@ -8,7 +10,6 @@ class GetVideos extends Path implements IRoute {
   public path   = '/api/videos'
   public method = 'get'
 
-  public cache = true
   public requireUserToken = true
 
   public async onRequest(req: HttpReq) {
@@ -27,10 +28,16 @@ class GetVideos extends Path implements IRoute {
           upcoming: upcoming === 'true' ? true : undefined,
           recentlyAdded: recentlyAdded === 'true' ? true : undefined
         }
-      )
+      ),
+      user = await this.server.utils.getUserByToken(this.token)
 
     return {
-      value: videos,
+      value: videos.filter(
+        (video) => video.series ? (
+          user.tier >= IUserTiers.PREM_1 &&
+          Date.now() < (user.tierExpir || 0)
+        ) : true
+      ),
       code: 200
     }
   }

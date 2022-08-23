@@ -95,6 +95,7 @@ interface IUser {
   state: number
 
   payments: IPaymentData[] // list of completed payments
+  tierExpir: number
 }
 
 export {

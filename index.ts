@@ -14,7 +14,6 @@ import UpdateVideo from './src/routes/video/UpdateVideo'
 import DeleteVideo from './src/routes/video/DeleteVideo'
 import ReplaceVideo from './src/routes/video/ReplaceVideo'
 
-import GetContent from './src/routes/video/GetContent'
 import SearchVideo from './src/routes/video/SearchVideo'
 
 // user-related routes
@@ -25,6 +24,7 @@ import GetLibrary from './src/routes/user/GetLibrary'
 import CreateOrder from './src/routes/orders/CreateOrder'
 
 import CaptureOrder from './src/routes/orders/CaptureOrder'
+import GetPlans from './src/routes/plans/GetPlans'
 
 const main = async () => {
   const http = new HttpServer(config)
@@ -48,7 +48,6 @@ const main = async () => {
   await http.register(DeleteVideo)
   await http.register(ReplaceVideo)
 
-  await http.register(GetContent)
   await http.register(SearchVideo)
 
   await http.register(CreateUser)
@@ -58,6 +57,7 @@ const main = async () => {
   await http.register(CreateOrder)
 
   await http.register(CaptureOrder)
+  await http.register(GetPlans)
 
   try {
     await http.ready()

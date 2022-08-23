@@ -14,10 +14,17 @@ class CreateOrder extends Path implements IRoute {
 
   public async onRequest(req: HttpReq) {
     const { tier } = req.body as unknown as { tier: IUserTiers },
-      res = await this.server.utils.paypalCreateOrder(this.token, tier || IUserTiers.PREM_1)
+      user = await this.server.utils.getUserByToken(this.token)
+
+    if (user.tier && user.tierExpir > Date.now())
+      return {
+        error: true,
+        message: 'You currently have a pending plan.',
+        code: 400
+      }
 
     return {
-      value: res,
+      value: await this.server.utils.paypalCreateOrder(this.token, tier || IUserTiers.PREM_1),
       code: 200
     }
   }

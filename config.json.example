@@ -44,7 +44,7 @@
   "jwt_secret": "jwt_secret",
   
   "paypal": {
-    "base": "https://api-m.sandbox.paypal.com",
+    "base": "https://api-m.paypal.com",
     "currencyCode": "USD",
     "clientID": "PAYPAL_CLIENT_ID",
     "appSecret": "PAYPAL_SECRET_ID"

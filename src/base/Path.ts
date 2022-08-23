@@ -190,7 +190,9 @@ class Path implements IRoute {
               if (typeof result.code === 'number')
                 res.statusCode = result.code
 
-              await this.addToCache(url, result)
+              if (!result.error) // don't cache when errored
+                await this.addToCache(url, result)
+
               res.send(
                 this.clean(result)
               )

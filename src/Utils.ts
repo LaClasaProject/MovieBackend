@@ -89,23 +89,6 @@ class Utils {
     return await this.server.models.Videos.findByIdAndDelete(_id)
   }
 
-  public async getContent() {
-    const otherVideos = await this.getVideos(
-      {
-        pinned: true,
-        upcoming: true,
-        skip: 0,
-        limit: 20
-      }
-    ),
-      mainVideos = await this.getVideos()
-
-    return {
-      otherVideos,
-      mainVideos
-    }
-  }
-
   public async searchByTitle(title: string = '') {
     return await this.server.models.Videos.find(
       { 'meta.title': new RegExp(title, 'gi') }
@@ -296,13 +279,13 @@ class Utils {
         this.server.config.paypal.base + url,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${data.access_token}`
-          }
+          headers: { Authorization: `Bearer ${data.access_token}` }
         }
       )
 
-    const order = this.server.orders.get(orderID)
+    const order = this.server.orders.get(orderID),
+      dateNow = Date.now()
+
     if (order) { // add plan to user
       const user = await this.server.models.Users.findById(order._id),
         payments = [...user.payments]
@@ -315,14 +298,19 @@ class Utils {
           email: res.data.payer.email_address,
           tier: order.tier,
 
-          purchasedAt: Date.now()
+          purchasedAt: dateNow
         }
       )
 
       this.server.orders.delete(orderID) // remove from cache
       await this.server.models.Users.findByIdAndUpdate(
         user._id,
-        { payments }
+        {
+          tier: order.tier,
+          tierExpir: dateNow + 30 * 24 * 60 * (60 * 1000), // 1 month
+
+          payments,
+        }
       )
     }
 
