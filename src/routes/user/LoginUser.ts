@@ -11,7 +11,7 @@ class LoginUser extends Path implements IRoute {
   public path   = '/api/users/token'
   public method = 'post'
 
-  public captcha = false
+  public captcha = true
 
   public async onRequest(req: HttpReq) {
     const data = req.body as unknown as IUser,    

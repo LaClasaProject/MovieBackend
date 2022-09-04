@@ -26,6 +26,8 @@ import CreateOrder from './src/routes/orders/CreateOrder'
 import CaptureOrder from './src/routes/orders/CaptureOrder'
 import GetPlans from './src/routes/plans/GetPlans'
 
+import GetUser from './src/routes/user/GetUser'
+
 const main = async () => {
   const http = new HttpServer(config)
 
@@ -58,6 +60,8 @@ const main = async () => {
 
   await http.register(CaptureOrder)
   await http.register(GetPlans)
+
+  await http.register(GetUser)
 
   try {
     await http.ready()

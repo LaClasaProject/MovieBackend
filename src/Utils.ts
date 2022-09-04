@@ -213,7 +213,10 @@ class Utils {
     }
   ) {
     data.password = await this.hash(data.password ?? '')
-    return await this.server.models.Users.findOne(data)
+    const user = await this.server.models.Users.findOne(data)
+
+    delete user.password
+    return user
   }
 
   public async getUserLibrary(token: string) {
@@ -233,10 +236,12 @@ class Utils {
 
   public async getUserByToken(token: string) {
     const data = await this.decryptJWT<{ _id: string, state: number }>(token) // use user.state to determine if token is valid or not
-    
-    return data ?
-      await this.server.models.Users.findOne(data) :
-      null
+    if (!data) return
+
+    const user = await this.server.models.Users.findOne(data) 
+    delete user.password
+
+    return user
   }
 
   public async verifyToken(token: string) {
